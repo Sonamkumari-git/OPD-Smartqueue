@@ -1,0 +1,34 @@
+{
+  "build_command": "pnpm run build",
+  "capabilities": [],
+  "dev_command": "pnpm run dev",
+  "env_vars": {},
+  "experiments": null,
+  "git_remote": {
+    "repo_url": "https://7f0548f6b28a1758d9bf7be630d36cb4.artifacts.cloudflare.net/git/prod/FaUtsBNMmwxTxGx2ohXXGx.git",
+    "expiration": "2026-08-23T12:15:06.094Z",
+    "token": "art_v2_x_ff0ff8d3aaef68a6be3639898460c2e1a3923f69?expires=1787487306",
+    "backend": "GIT_BACKEND_ARTIFACTS"
+  },
+  "name": "opd-smartqueue",
+  "path": "/home/ubuntu/opd-smartqueue",
+  "port": 3000,
+  "secrets": {
+    "BUILT_IN_FORGE_API_KEY": "9QgXj9ZvAhfXJNw6rXY8J4",
+    "BUILT_IN_FORGE_API_URL": "https://forge.manus.ai",
+    "JWT_SECRET": "CVDXGEwxLnENEyooNm9Dbs",
+    "OAUTH_SERVER_URL": "https://api.manus.im",
+    "OWNER_NAME": "Sonam Kumari",
+    "OWNER_OPEN_ID": "Rd6HMWF8pxGHVusAxXLW4M",
+    "VITE_ANALYTICS_ENDPOINT": "https://manus-analytics.com",
+    "VITE_ANALYTICS_WEBSITE_ID": "56894d69-42fd-470b-87b0-2189b0a2e349",
+    "VITE_APP_ID": "FaUtsBNMmwxTxGx2ohXXGx",
+    "VITE_APP_LOGO": "",
+    "VITE_APP_TITLE": "OPD SmartQueue",
+    "VITE_FRONTEND_FORGE_API_KEY": "4L8jYq6rymT25zhN9RTcDw",
+    "VITE_FRONTEND_FORGE_API_URL": "https://forge.manus.ai",
+    "VITE_OAUTH_PORTAL_URL": "https://manus.im"
+  },
+  "template_id": "web-static",
+  "test_command": "pnpm test"
+}

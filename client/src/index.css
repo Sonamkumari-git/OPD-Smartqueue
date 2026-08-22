@@ -1,9 +1,15 @@
+/**
+ * Clinical Flight Deck tokens: warm porcelain canvas, mineral navy structure,
+ * and Queue Teal (#0F8F83) reserved for live state and decisive action.
+ */
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-sans: "Manrope", sans-serif;
+  --font-serif: "Fraunces", serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -27,151 +33,129 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
+  --radius: 0.9rem;
+  --background: oklch(0.972 0.007 90);
+  --foreground: oklch(0.28 0.04 240);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
+  --card-foreground: oklch(0.28 0.04 240);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
-}
-
-.dark {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-500);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.85 0.005 65);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.85 0.005 65);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.85 0.005 65);
-  --secondary: oklch(0.24 0.006 286.033);
-  --secondary-foreground: oklch(0.7 0.005 65);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground:  oklch(0.92 0.005 65);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.488 0.243 264.376);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.85 0.005 65);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground:  oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.488 0.243 264.376);
+  --popover-foreground: oklch(0.28 0.04 240);
+  --primary: oklch(0.56 0.10 185);
+  --primary-foreground: oklch(0.99 0.004 90);
+  --secondary: oklch(0.94 0.025 175);
+  --secondary-foreground: oklch(0.28 0.04 240);
+  --muted: oklch(0.95 0.008 90);
+  --muted-foreground: oklch(0.50 0.025 240);
+  --accent: oklch(0.92 0.035 175);
+  --accent-foreground: oklch(0.28 0.04 240);
+  --destructive: oklch(0.60 0.19 29);
+  --destructive-foreground: oklch(0.99 0.004 90);
+  --border: oklch(0.86 0.018 215);
+  --input: oklch(0.86 0.018 215);
+  --ring: oklch(0.56 0.10 185);
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]),
-  [type="button"]:not(:disabled),
-  [type="submit"]:not(:disabled),
-  [type="reset"]:not(:disabled),
-  a[href],
-  select:not(:disabled),
-  input[type="checkbox"]:not(:disabled),
-  input[type="radio"]:not(:disabled) {
-    @apply cursor-pointer;
-  }
+  * { @apply border-border outline-ring/50; }
+  html { scroll-behavior: smooth; }
+  body { @apply bg-background font-sans text-foreground antialiased; }
+  button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [type="button"]:not(:disabled), [type="submit"]:not(:disabled), a[href] { @apply cursor-pointer; }
+  ::selection { background: #BDE6DE; color: #15334A; }
 }
 
-@layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
-   */
-  .container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
-    padding-right: 1rem;
-  }
-
-  .flex {
-    min-height: 0;
-    min-width: 0;
-  }
-
-  @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem; /* 24px - tablet padding */
-      padding-right: 1.5rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .container {
-      padding-left: 2rem; /* 32px - desktop padding */
-      padding-right: 2rem;
-      max-width: 1280px; /* Standard content width */
-    }
-  }
+@media (prefers-reduced-motion: no-preference) {
+  button, a { transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 180ms cubic-bezier(0.23, 1, 0.32, 1), border-color 180ms cubic-bezier(0.23, 1, 0.32, 1), color 180ms cubic-bezier(0.23, 1, 0.32, 1); }
+  button:active { transform: scale(0.97); }
 }
+
+/* Clinical Flight Deck dashboard refinement: precise scan bands, operational numerals, and owned queue signals. */
+.dashboard-ops {
+  background-image:
+    linear-gradient(to right, rgb(21 51 74 / 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(21 51 74 / 0.024) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.dashboard-ops header {
+  background: rgb(246 244 238 / 0.9);
+  box-shadow: inset 0 -1px 0 rgb(21 51 74 / 0.035);
+}
+
+.dashboard-ops [class*="font-[Fraunces]"] {
+  font-family: "Manrope", sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.075em !important;
+}
+
+.dashboard-ops section {
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-ops section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.5rem;
+  right: 1.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, #0F8F83 0 26%, rgb(15 143 131 / 0.15) 26% 50%, transparent 50%);
+  opacity: 0.9;
+}
+
+.dashboard-ops section[class*="bg-[#15334A]"]::after {
+  content: "LIVE QUEUE / AUTHORITATIVE STATE";
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.25rem;
+  color: rgb(118 214 203 / 0.52);
+  font: 800 9px/1 "Manrope", sans-serif;
+  letter-spacing: 0.14em;
+}
+
+.dashboard-ops section[class*="bg-[#15334A]"] .font-\[Fraunces\] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 3.9rem;
+  padding: 0.18rem 0.65rem 0.18rem 0.18rem;
+  border: 1px solid rgb(118 214 203 / 0.28);
+  border-radius: 0.75rem;
+  background: linear-gradient(90deg, rgb(118 214 203 / 0.14) 0 23%, transparent 23%);
+}
+
+.dashboard-ops section:not([class*="bg-[#15334A]"]) .font-\[Fraunces\] {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.58rem;
+}
+
+.dashboard-ops section:not([class*="bg-[#15334A]"]) .font-\[Fraunces\]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0.32rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0F8F83 0 52%, rgb(15 143 131 / 0.16) 52% 100%);
+}
+
+.dashboard-ops .divide-y > div {
+  position: relative;
+}
+
+.dashboard-ops .divide-y > div::before {
+  content: "";
+  position: absolute;
+  left: -1.5rem;
+  top: 50%;
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 999px;
+  background: rgb(15 143 131 / 0.36);
+}
+
+.dashboard-ops .divide-y > div:first-child::before { background: #0F8F83; }
