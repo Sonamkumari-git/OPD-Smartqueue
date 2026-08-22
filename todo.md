@@ -8,3 +8,4 @@
 - [x] Build real patient registration/token, clinician/vitals, notification, and admin analytics workflows.
 - [x] Add MongoDB integration, concurrency, authorization, WebSocket, and ML contract tests.
 - [x] Validate end-to-end behavior, update documentation, visually verify the UI, and deliver a checkpoint.
+- [ ] Push the completed source tree to the user-provided GitHub repository and verify the remote commit.
