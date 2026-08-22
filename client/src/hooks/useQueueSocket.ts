@@ -13,8 +13,7 @@ export function useQueueSocket(path: string | null, accessToken: string | null, 
     const connect = () => {
       setStatus(socket ? "reconnecting" : "connecting");
       const url = new URL(`${API_BASE_URL.replace(/^http/, "ws")}${path}`);
-      url.searchParams.set("token", accessToken);
-      socket = new WebSocket(url);
+      socket = new WebSocket(url, ["opd-smartqueue", accessToken]);
       socket.onopen = () => { if (!cancelled) setStatus("connected"); };
       socket.onmessage = () => { if (!cancelled) onEvent(); };
       socket.onclose = () => { if (!cancelled) { setStatus("reconnecting"); retry.current = window.setTimeout(connect, 1800); } };

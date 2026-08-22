@@ -13,4 +13,4 @@ def waiting_patients_ahead(tokens: Iterable[dict], token_id: str) -> int:
     target_index = next((index for index, token in enumerate(ordered) if str(token.get("_id")) == token_id), None)
     if target_index is None:
         return 0
-    return sum(1 for token in ordered[:target_index] if token.get("status") == "WAITING")
+    return sum(1 for token in ordered[:target_index] if token.get("status") in {"WAITING", "CALLED", "IN_CONSULTATION"})

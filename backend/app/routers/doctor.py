@@ -5,8 +5,10 @@ from app.repositories.core import CatalogRepository, QueueRepository
 from app.schemas.common import APIResponse, Role
 from app.schemas.queue import DoctorStatusUpdate, TokenActionRequest
 from app.services.queue_service import QueueService
+from app.services.notification_service import NotificationService
 from app.utils.errors import NotFoundError
 from app.utils.serializers import as_object_id, serialize_document
+from app.websocket.manager import manager
 
 router = APIRouter(prefix="/api/doctors", tags=["doctor workflow"])
 service = QueueService()
@@ -17,7 +19,7 @@ async def doctor_queue(current_user: dict = Depends(require_roles(Role.DOCTOR)))
     doctor = await CatalogRepository().get_doctor_by_user_id(current_user["_id"])
     if doctor is None:
         raise NotFoundError("Doctor profile not found.")
-    queue = await QueueRepository().ordered_active_tokens(doctor["_id"], service.queue_date())
+    queue = await QueueRepository().doctor_queue_details(doctor["_id"], service.queue_date())
     return APIResponse(data=[serialize_document(item) for item in queue])
 
 
@@ -50,5 +52,9 @@ async def set_status(payload: DoctorStatusUpdate, current_user: dict = Depends(r
     if doctor is None:
         raise NotFoundError("Doctor profile not found.")
     updated = await CatalogRepository().update_doctor_status(doctor["_id"], payload.status.value)
+    await NotificationService().audit(current_user["_id"], "DOCTOR_STATUS_CHANGED", "doctor", doctor["_id"], {"status": payload.status.value})
+    event = {"event": "DOCTOR_STATUS_CHANGED", "doctor_id": str(doctor["_id"]), "department_id": str(doctor["department_id"]), "status": payload.status.value}
+    await manager.broadcast_to_department(str(doctor["department_id"]), event)
+    await manager.broadcast_to_doctor(str(doctor["_id"]), event)
     await service.refresh_and_broadcast(doctor["_id"], doctor["department_id"], service.queue_date())
     return APIResponse(data=serialize_document(updated), message="Doctor status updated.")

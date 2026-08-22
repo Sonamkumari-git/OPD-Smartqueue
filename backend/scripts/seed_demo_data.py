@@ -47,6 +47,7 @@ async def seed() -> None:
         admin = await ensure_user("Demo Administrator", "admin@opdsmartqueue.local", "admin")
         doctor_user = await ensure_user("Dr. Sharma", "dr.sharma@opdsmartqueue.local", "doctor")
         nurse_user = await ensure_user("Nurse Asha", "nurse.asha@opdsmartqueue.local", "nurse")
+        await db.users.update_one({"_id": nurse_user["_id"]}, {"$set": {"department_ids": [cardiology["_id"]], "updated_at": now}})
         doctor = await db.doctors.find_one({"user_id": doctor_user["_id"]})
         if doctor is None:
             doctor_doc = {"user_id": doctor_user["_id"], "department_id": cardiology["_id"], "specialization": "Cardiology", "license_number": "DEMO-CARD-001", "status": "BUSY", "is_demo": True, "created_at": now, "updated_at": now}

@@ -31,8 +31,11 @@ async def patient_vitals(patient_id: str, current_user: dict = Depends(require_r
             raise ForbiddenError()
     elif current_user["role"] == Role.DOCTOR.value:
         doctor = await CatalogRepository().get_doctor_by_user_id(current_user["_id"])
-        if doctor is None or not await queue.doctor_has_patient(doctor["_id"], patient_object_id):
+        if doctor is None or not await queue.doctor_has_active_patient(doctor["_id"], patient_object_id, service.queue.queue_date()):
             raise ForbiddenError()
-    elif not await queue.patient_is_active_today(patient_object_id, service.queue.queue_date()):
-        raise ForbiddenError("Nurses may view vitals only for an active visit.")
+    else:
+        allowed_departments = {str(department_id) for department_id in current_user.get("department_ids", [])}
+        visits = await queue.list_waiting_visits(service.queue.queue_date())
+        if not any(visit["patient_id"] == patient_object_id and str(visit["department_id"]) in allowed_departments for visit in visits):
+            raise ForbiddenError("Nurses may view vitals only for an active visit in an assigned department.")
     return APIResponse(data=[serialize_document(item) for item in await service.patient_vitals(patient_object_id)])

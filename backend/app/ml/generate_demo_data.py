@@ -2,6 +2,7 @@
 from pathlib import Path
 import numpy as np
 import pandas as pd
+from app.ml.features import FEATURE_COLUMNS
 
 DATA_DIR = Path(__file__).parent / "data"
 DATA_FILE = DATA_DIR / "synthetic_opd_wait_times.csv"
@@ -30,13 +31,16 @@ def generate_dataset(rows: int = 2200, seed: int = 42) -> pd.DataFrame:
         completed = int(rng.integers(0, 35))
         status = "BUSY" if rng.random() < 0.72 else "AVAILABLE"
         waiting_time = max(0, patients_ahead * (0.40 * recent_average + 0.35 * today_average + 0.25 * doctor_average) + (4 if status == "BUSY" else 0) + rng.normal(0, 5.5))
-        records.append({"doctor_id": doctor, "department_id": department, "hour": hour, "minute": minute, "day_of_week": day_of_week, "patients_ahead": patients_ahead, "queue_length": queue_length, "doctor_average_consultation_duration": round(doctor_average, 2), "department_average_consultation_duration": round(department_average, 2), "recent_consultation_average": round(recent_average, 2), "today_consultation_average": round(today_average, 2), "patients_completed_today": completed, "current_doctor_status": status, "consultation_duration": round(recent_average, 2), "waiting_time_minutes": round(float(waiting_time), 2), "dataset_notice": "Synthetic development data only; not real hospital data."})
+        records.append({"department_code": department.upper(), "doctor_label": doctor, "hour": hour, "minute": minute, "day_of_week": day_of_week, "patients_ahead": patients_ahead, "queue_length": queue_length, "doctor_average_consultation_duration": round(doctor_average, 2), "department_average_consultation_duration": round(department_average, 2), "recent_consultation_average": round(recent_average, 2), "today_consultation_average": round(today_average, 2), "patients_completed_today": completed, "current_doctor_status": status, "consultation_duration": round(recent_average, 2), "waiting_time_minutes": round(float(waiting_time), 2), "dataset_notice": "Synthetic development data only; not real hospital data."})
     return pd.DataFrame(records)
 
 
 def write_dataset(rows: int = 2200) -> Path:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     frame = generate_dataset(rows=rows)
+    missing = set(FEATURE_COLUMNS) - set(frame.columns)
+    if missing:
+        raise ValueError(f"Synthetic dataset is missing required ML features: {sorted(missing)}")
     frame.to_csv(DATA_FILE, index=False)
     return DATA_FILE
 

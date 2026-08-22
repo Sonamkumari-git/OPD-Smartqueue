@@ -25,7 +25,10 @@ class DoctorPublic(BaseModel):
 class TokenCreateRequest(BaseModel):
     department_id: str
     doctor_id: str
-    priority: Priority = Priority.NORMAL
+
+
+class TokenPriorityUpdate(BaseModel):
+    priority: Priority
 
 
 class TokenPublic(BaseModel):

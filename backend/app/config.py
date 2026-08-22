@@ -17,12 +17,22 @@ class Settings(BaseSettings):
     baseline_recent_weight: float = 0.50
     baseline_today_weight: float = 0.30
     baseline_historical_weight: float = 0.20
+    login_max_attempts: int = 8
+    login_window_seconds: int = 300
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=False, extra="ignore")
 
     @property
     def cors_origins(self) -> list[str]:
         return [origin.strip() for origin in self.frontend_url.split(",") if origin.strip()]
+
+    @property
+    def is_production(self) -> bool:
+        return self.app_env.strip().lower() in {"production", "prod"}
+
+    @property
+    def has_safe_jwt_secret(self) -> bool:
+        return self.jwt_secret != "change_this_in_local_env" and len(self.jwt_secret) >= 32
 
 
 @lru_cache

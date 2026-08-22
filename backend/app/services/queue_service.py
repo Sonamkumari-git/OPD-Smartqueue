@@ -1,6 +1,7 @@
 """Priority-aware FIFO queue orchestration, atomic token issuance, and live event emission."""
 from datetime import datetime, timedelta
 from bson import ObjectId
+from pymongo.errors import DuplicateKeyError
 from app.config import get_settings
 from app.repositories.core import CatalogRepository, QueueRepository
 from app.schemas.common import Priority
@@ -27,6 +28,12 @@ class QueueService:
     def queue_date() -> str:
         return datetime.now().date().isoformat()
 
+    async def emit_token_event(self, token: dict, event: str) -> None:
+        payload = {"event": event, "token_id": str(token["_id"]), "token_number": token["token_number"], "status": token["status"], "doctor_id": str(token["doctor_id"]), "department_id": str(token["department_id"]), "updated_at": token.get("updated_at", datetime.now().astimezone())}
+        await manager.broadcast_to_department(str(token["department_id"]), payload)
+        await manager.broadcast_to_doctor(str(token["doctor_id"]), payload)
+        await manager.broadcast_to_patient(str(token["patient_id"]), payload)
+
     async def create_token(self, current_user: dict, payload: TokenCreateRequest) -> dict:
         patient = await self.catalog.get_patient_by_user_id(current_user["_id"])
         if patient is None:
@@ -46,15 +53,19 @@ class QueueService:
             raise ConflictError("You already have an active OPD token today.")
         now = datetime.now().astimezone()
         sequence = await self.repository.next_sequence(department_id, queue_date)
-        token = await self.repository.create_token({
+        try:
+            token = await self.repository.create_token({
             "token_number": f"{department['code']}-{sequence:03d}", "sequence": sequence,
             "patient_id": patient["_id"], "patient_user_id": current_user["_id"], "doctor_id": doctor_id,
-            "department_id": department_id, "status": "WAITING", "priority": payload.priority.value,
-            "priority_rank": PRIORITY_RANK[payload.priority.value], "queue_date": queue_date,
+            "department_id": department_id, "status": "WAITING", "priority": Priority.NORMAL.value,
+            "priority_rank": PRIORITY_RANK[Priority.NORMAL.value], "queue_date": queue_date,
             "created_at": now, "updated_at": now, "called_at": None, "consultation_started_at": None, "completed_at": None,
-        })
+            })
+        except DuplicateKeyError as exc:
+            raise ConflictError("You already have an active OPD token today.") from exc
         await self.notifications.audit(current_user["_id"], "CREATE_TOKEN", "token", token["_id"], {"token_number": token["token_number"]})
         await self.notifications.notify_patient(current_user["_id"], token["_id"], patient["_id"], "TOKEN_CREATED", f"Your token {token['token_number']} has been created.")
+        await self.emit_token_event(token, "TOKEN_CREATED")
         await self.refresh_and_broadcast(doctor_id, department_id, queue_date)
         return token
 
@@ -62,15 +73,20 @@ class QueueService:
         active = await self.repository.ordered_active_tokens(token["doctor_id"], token["queue_date"])
         index = next((i for i, item in enumerate(active) if item["_id"] == token["_id"]), None)
         doctor = await self.catalog.get_doctor(token["doctor_id"])
+        department = await self.catalog.get_department(token["department_id"])
         state = await self.repository.get_queue_state(token["doctor_id"], token["queue_date"])
-        patients_ahead = sum(1 for item in active[:index] if item["status"] == "WAITING") if index is not None else 0
-        expected_minutes = await self.analytics.expected_consultation_minutes(token["doctor_id"], token["department_id"])
-        baseline_minutes = patients_ahead * expected_minutes
+        predecessors = active[:index] if index is not None else []
+        patients_ahead = sum(1 for item in predecessors if item["status"] in {"WAITING", "CALLED", "IN_CONSULTATION"})
+        consultation_in_progress = any(item["status"] == "IN_CONSULTATION" for item in predecessors)
+        service_units_ahead = patients_ahead
+        profile = await self.analytics.consultation_feature_profile(token["doctor_id"], token["department_id"], token["queue_date"])
+        expected_minutes = await self.analytics.expected_consultation_minutes(token["doctor_id"], token["department_id"], token["queue_date"])
+        baseline_minutes = service_units_ahead * expected_minutes
         current_time = datetime.now().astimezone()
-        model_estimate = predict_wait_time({"doctor_id": str(token["doctor_id"]), "department_id": str(token["department_id"]), "hour": current_time.hour, "minute": current_time.minute, "day_of_week": current_time.weekday(), "patients_ahead": patients_ahead, "queue_length": len(active), "doctor_average_consultation_duration": expected_minutes, "department_average_consultation_duration": expected_minutes, "recent_consultation_average": expected_minutes, "today_consultation_average": expected_minutes, "patients_completed_today": 0, "current_doctor_status": doctor.get("status", "OFFLINE") if doctor else "OFFLINE"}, baseline_minutes)
+        model_estimate = predict_wait_time({"department_code": department.get("code", "UNKNOWN") if department else "UNKNOWN", "hour": current_time.hour, "minute": current_time.minute, "day_of_week": current_time.weekday(), "patients_ahead": service_units_ahead, "queue_length": len(active), **profile, "current_doctor_status": doctor.get("status", "OFFLINE") if doctor else "OFFLINE"}, baseline_minutes)
         estimated = model_estimate["predicted_wait_minutes"]
         recommended = current_time + timedelta(minutes=estimated) if token["status"] == "WAITING" else None
-        return {"token_id": str(token["_id"]), "token_number": token["token_number"], "position": index + 1 if index is not None else None, "patients_ahead": patients_ahead, "queue_length": len(active), "currently_serving": state.get("current_token") if state else None, "doctor_status": doctor.get("status", "OFFLINE") if doctor else "OFFLINE", "baseline_wait_minutes": baseline_minutes, "estimated_wait_minutes": estimated, "estimate_lower_minutes": model_estimate["prediction_lower"], "estimate_upper_minutes": model_estimate["prediction_upper"], "model_version": model_estimate["model_version"], "prediction_source": model_estimate["prediction_source"], "recommended_return_at": recommended, "estimate_notice": "Waiting time is an estimate and may change with real-time queue conditions."}
+        return {"token_id": str(token["_id"]), "token_number": token["token_number"], "position": index + 1 if index is not None else None, "patients_ahead": patients_ahead, "consultation_in_progress_ahead": consultation_in_progress, "queue_length": len(active), "currently_serving": state.get("current_token") if state else None, "doctor_status": doctor.get("status", "OFFLINE") if doctor else "OFFLINE", "baseline_wait_minutes": baseline_minutes, "estimated_wait_minutes": estimated, "estimate_lower_minutes": model_estimate["prediction_lower"], "estimate_upper_minutes": model_estimate["prediction_upper"], "model_version": model_estimate["model_version"], "prediction_source": model_estimate["prediction_source"], "recommended_return_at": recommended, "estimate_notice": "Waiting time is an estimate and may change with real-time queue conditions."}
 
     async def refresh_and_broadcast(self, doctor_id: ObjectId, department_id: ObjectId, queue_date: str) -> dict:
         active = await self.repository.ordered_active_tokens(doctor_id, queue_date)
@@ -98,11 +114,15 @@ class QueueService:
         active = await self.repository.ordered_active_tokens(doctor["_id"], queue_date)
         if any(item["status"] in {"CALLED", "IN_CONSULTATION"} for item in active):
             raise ConflictError("Complete or skip the current patient before calling the next patient.")
-        token = await self.repository.call_next(doctor["_id"], queue_date, datetime.now().astimezone())
+        try:
+            token = await self.repository.call_next(doctor["_id"], queue_date, datetime.now().astimezone())
+        except DuplicateKeyError as exc:
+            raise ConflictError("Another request has already claimed the next patient.") from exc
         if token is None:
             raise AppError("The queue has no waiting patients.", "QUEUE_EMPTY", 409)
         await self.notifications.audit(doctor_user["_id"], "CALL_NEXT_PATIENT", "token", token["_id"], {"token_number": token["token_number"]})
         await self.notifications.notify_patient(token.get("patient_user_id"), token["_id"], token["patient_id"], "YOUR_TURN", f"Your token {token['token_number']} has been called.")
+        await self.emit_token_event(token, "TOKEN_CALLED")
         await self.refresh_and_broadcast(doctor["_id"], doctor["department_id"], queue_date)
         return token
 
@@ -125,5 +145,42 @@ class QueueService:
             from app.repositories.core import ClinicalRepository
             await ClinicalRepository().create_consultation({"token_id": token["_id"], "patient_id": token["patient_id"], "doctor_id": doctor["_id"], "started_at": token["consultation_started_at"], "ended_at": now, "duration_seconds": duration_seconds, "created_at": now})
             await self.notifications.notify_patient(token.get("patient_user_id"), token["_id"], token["patient_id"], "CONSULTATION_COMPLETED", f"Your consultation for token {token['token_number']} has been completed.")
+        elif next_status == "IN_CONSULTATION":
+            await self.notifications.notify_patient(token.get("patient_user_id"), token["_id"], token["patient_id"], "CONSULTATION_STARTED", f"Consultation has started for token {token['token_number']}.")
+        elif next_status == "SKIPPED":
+            await self.notifications.notify_patient(token.get("patient_user_id"), token["_id"], token["patient_id"], "TOKEN_SKIPPED", f"Your token {token['token_number']} was skipped. Please contact reception if you still need assistance.")
+        event = {"IN_CONSULTATION": "CONSULTATION_STARTED", "COMPLETED": "CONSULTATION_COMPLETED", "SKIPPED": "TOKEN_SKIPPED"}.get(next_status, "TOKEN_UPDATED")
+        await self.emit_token_event(token, event)
         await self.refresh_and_broadcast(doctor["_id"], doctor["department_id"], token["queue_date"])
         return token
+
+    async def cancel_token(self, patient_user: dict, token_id: ObjectId) -> dict:
+        patient = await self.catalog.get_patient_by_user_id(patient_user["_id"])
+        if patient is None:
+            raise NotFoundError("Patient profile not found.")
+        token = await self.repository.cancel_token_for_patient(token_id, patient["_id"], datetime.now().astimezone())
+        if token is None:
+            raise ConflictError("Only a waiting token belonging to you can be cancelled.")
+        await self.notifications.audit(patient_user["_id"], "TOKEN_CANCELLED", "token", token["_id"], {"token_number": token["token_number"]})
+        await self.notifications.notify_patient(patient_user["_id"], token["_id"], patient["_id"], "TOKEN_CANCELLED", f"Your token {token['token_number']} was cancelled.")
+        await self.emit_token_event(token, "TOKEN_CANCELLED")
+        await self.refresh_and_broadcast(token["doctor_id"], token["department_id"], token["queue_date"])
+        return token
+
+    async def set_priority(self, staff_user: dict, token_id: ObjectId, priority: Priority) -> dict:
+        token = await self.repository.get_token(token_id)
+        if token is None:
+            raise NotFoundError("Token not found.")
+        doctor_id = None
+        if staff_user["role"] == "doctor":
+            doctor = await self.catalog.get_doctor_by_user_id(staff_user["_id"])
+            if doctor is None:
+                raise NotFoundError("Doctor profile not found.")
+            doctor_id = doctor["_id"]
+        updated = await self.repository.update_priority(token_id, priority.value, PRIORITY_RANK[priority.value], doctor_id)
+        if updated is None:
+            raise ConflictError("Only a waiting token in your authorized queue can change priority.")
+        await self.notifications.audit(staff_user["_id"], "TOKEN_PRIORITY_CHANGED", "token", updated["_id"], {"priority": priority.value})
+        await self.emit_token_event(updated, "TOKEN_PRIORITY_CHANGED")
+        await self.refresh_and_broadcast(updated["doctor_id"], updated["department_id"], updated["queue_date"])
+        return updated

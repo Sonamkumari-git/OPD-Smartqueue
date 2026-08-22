@@ -26,8 +26,8 @@ The system intentionally separates **workflow support** from clinical decision-m
 |---|---|
 | Patient | Register, sign in, select a department and doctor, receive a token, view their own live position, estimate, return window, history, and notifications. |
 | Doctor | View the assigned daily queue; call, start, complete, or skip an eligible token; update status; view relevant patient vitals. |
-| Nurse | Review active visits and record validated temperature, heart rate, blood pressure, and SpO2 observations. |
-| Admin | Review aggregate queue and consultation activity, department/doctor workload, audit records, and ML development metrics. |
+| Nurse | Review department-assigned active visits, record validated workflow vitals, and review the permitted vitals history for the selected visit. |
+| Admin | Filter real MongoDB aggregates by date and department; review queue load, patient counts, wait trends, consultation duration, and doctor workload. |
 
 ## Technology Constraints
 
@@ -85,9 +85,9 @@ These indexes match the dominant query paths: authenticating by email, resolving
 
 ## Queue Algorithm and Token Safety
 
-Token numbers are department-specific and daily, such as `C-150`. `QueueRepository.next_sequence()` uses MongoDB `findOneAndUpdate`, `$inc`, and `upsert` against a department-day counter. A unique compound index on `(department_id, queue_date, sequence)` provides a second line of protection against duplicate issuance.
+Token numbers are department-specific and daily, such as `C-150`. `QueueRepository.next_sequence()` uses MongoDB `findOneAndUpdate`, `$inc`, and `upsert` against a department-day counter. A unique compound index on `(department_id, queue_date, sequence)` provides a second line of protection against duplicate issuance. A partial unique index allows **at most one active token per patient per day**, and a second partial unique index allows **at most one `CALLED` or `IN_CONSULTATION` token per doctor per day**.
 
-The dedicated queue service implements priority-aware FIFO ordering. Staff-supplied priority has a fixed rank: `EMERGENCY`, `HIGH`, then `NORMAL`; tokens within the same priority retain creation-order FIFO behavior. State transitions are guarded by the current status in the MongoDB update filter, preventing two browser sessions from successfully calling or completing the same token simultaneously.
+The dedicated queue service implements priority-aware FIFO ordering. Staff-supplied priority has a fixed rank: `EMERGENCY`, `HIGH`, then `NORMAL`; tokens within the same priority retain creation-order FIFO behavior. Patient token creation always persists `NORMAL` priority regardless of request payload. State transitions are guarded by the current status in the MongoDB update filter, preventing two browser sessions from successfully calling or completing the same token simultaneously. An already-called or in-consultation predecessor is still included in `patients_ahead` and baseline wait calculations.
 
 | Valid operational state | Supported next transition |
 |---|---|
@@ -100,7 +100,7 @@ The dedicated queue service implements priority-aware FIFO ordering. Staff-suppl
 
 The application uses two levels of estimate. The baseline is derived from `patients_ahead × expected_consultation_duration`. The expected duration is calculated from available recent, today, doctor-specific, and department-specific consultation history; the weights are configured via local environment variables rather than scattered in route code.
 
-The prediction service then loads a serialized model once. It uses queue load, time-of-day, day-of-week, doctor/department identity, duration averages, completions, and current doctor status to provide an approximate range. If a model is unavailable, the API stays operational by falling back to the baseline. Every response includes the notice that waiting time may change with real-time queue conditions.
+The prediction service then loads a serialized model once. Training and live inference share one feature contract: department code, queue load, time-of-day, day-of-week, doctor/department duration averages, completions, and current doctor status. If a model is unavailable, the API stays operational by falling back to the baseline. Every response includes the notice that waiting time may change with real-time queue conditions.
 
 ## Synthetic Dataset and ML Results
 
@@ -109,7 +109,7 @@ The prediction service then loads a serialized model once. It uses queue load, t
 | Model | MAE | RMSE | R² |
 |---|---:|---:|---:|
 | Linear Regression | 7.993 | 10.408 | 0.9541 |
-| Random Forest Regressor | **5.215** | 6.730 | 0.9808 |
+| Random Forest Regressor | **5.216** | 6.737 | 0.9808 |
 | Gradient Boosting Regressor | 5.218 | **6.657** | **0.9812** |
 
 **Random Forest Regressor** is selected because it has the lowest measured MAE in the synthetic development experiment. MAE measures average absolute error in minutes; RMSE penalizes larger errors more strongly; R² describes explained variance on the held-out synthetic test set. The EDA script writes distributions, queue relationships, and hourly-load visuals to `backend/app/ml/eda/`.
@@ -120,12 +120,12 @@ The prediction service then loads a serialized model once. It uses queue load, t
 |---|---|
 | Authentication | `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me` |
 | Catalogue | `GET /api/departments`, `GET /api/doctors`, `GET /api/doctors/{id}/availability` |
-| Patient | `GET /api/patients/me`, `GET /api/patients/me/tokens`, `GET /api/patients/me/notifications` |
-| Queue | `POST /api/queue/token`, `GET /api/queue/token/{id}`, `GET /api/queue/token/{id}/position` |
+| Patient | `GET /api/patients/me`, `GET /api/patients/me/tokens`, `GET /api/patients/me/notifications`, `PATCH /api/notifications/{id}/read` |
+| Queue | `POST /api/queue/token`, `GET /api/queue/token/{id}`, `GET /api/queue/token/{id}/position`, `POST /api/queue/token/{id}/cancel`, `PATCH /api/queue/token/{id}/priority` |
 | Doctor workflow | `GET /api/doctors/me/queue`, `POST /api/doctors/me/call-next`, `POST /api/doctors/me/start-consultation`, `POST /api/doctors/me/complete-consultation`, `POST /api/doctors/me/skip-patient` |
 | Vitals | `POST /api/vitals`, `GET /api/vitals/{patient_id}` |
 | Predictions | `GET /api/predictions/wait-time/{token_id}` |
-| Analytics | `GET /api/analytics/overview`, `/departments`, `/doctors`, `/hourly` |
+| Analytics | `GET /api/analytics/overview`, `/departments`, `/doctors`, `/trends` with optional `date`, `department_id`, and `doctor_id` filters |
 
 Successful responses use `{ "success": true, "data": ..., "message": ... }`. Operational errors return `{ "success": false, "message": ..., "error_code": ... }` without exposing internal exceptions. When running, FastAPI’s interactive API documentation is available at `http://127.0.0.1:8000/docs`.
 
@@ -135,11 +135,11 @@ The connection manager exposes scoped channels:
 
 | Channel | Purpose | Authorization boundary |
 |---|---|---|
-| `/ws/queue/{department_id}` | Department-level, minimum-necessary queue movement | Valid authenticated session |
+| `/ws/queue/{department_id}` | Department-level, minimum-necessary queue movement | Authorized role and department scope |
 | `/ws/patient/{patient_id}` | A patient’s own queue updates and notifications | Patient token owner only |
 | `/ws/doctor/{doctor_id}` | Doctor’s assigned queue updates | Assigned doctor only |
 
-The browser client treats a WebSocket message as a **change signal**. After reconnecting, it fetches authoritative REST state rather than trusting an old stream. Event types include `QUEUE_UPDATED`, `TOKEN_APPROACHING`, `YOUR_TURN`, `CONSULTATION_COMPLETED`, and `DOCTOR_STATUS_CHANGED`.
+The browser authenticates with the token in the `Sec-WebSocket-Protocol` pair `opd-smartqueue,<JWT>` rather than a URL query string. It treats a WebSocket message as a **change signal** and re-fetches authoritative REST state after reconnecting. Event types include `TOKEN_CREATED`, `TOKEN_CALLED`, `CONSULTATION_STARTED`, `CONSULTATION_COMPLETED`, `TOKEN_SKIPPED`, `TOKEN_CANCELLED`, `TOKEN_PRIORITY_CHANGED`, `DOCTOR_STATUS_CHANGED`, and `QUEUE_UPDATED`.
 
 ## Local Installation
 
@@ -169,7 +169,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Create `backend/.env` according to [`backend/ENVIRONMENT.md`](backend/ENVIRONMENT.md). Do not commit this file.
+Create `backend/.env` according to [`backend/ENVIRONMENT.md`](backend/ENVIRONMENT.md). Do not commit this file. Set `APP_ENV=development` locally. In `production`, FastAPI deliberately refuses startup when `JWT_SECRET` is still the default value or has fewer than 32 characters.
 
 Initialize MongoDB, create the indexes and default departments, seed local-only demonstration records, then train the synthetic-data model:
 
@@ -207,13 +207,17 @@ The seeded patient flow mirrors the demonstration: current token `C-142`, patien
 
 ## Tests and Quality Checks
 
-Run the backend unit suite from `backend/`:
+Run the backend unit and MongoDB integration suite from `backend/` after MongoDB is running:
 
 ```bash
 pytest -q
 ```
 
-The current test suite verifies priority/FIFO ordering, confirms that the currently consulting token is excluded from `patients_ahead`, and checks password hashing plus JWT issue/decode behaviour. Additional operational testing should exercise token generation, guarded queue transitions, WebSocket disconnect/reconnect, vitals authorization, and admin-only analytics against a local MongoDB instance.
+The suite verifies priority/FIFO ordering, counts nonterminal preceding patients correctly, checks password hashing and JWT issue/decode behaviour, exercises concurrent token creation and call-next races against MongoDB, verifies notification idempotence, validates nurse department scope, checks patient priority cannot be self-escalated, and enforces the ML inference feature contract. A live WebSocket smoke check is also available after starting the API:
+
+```bash
+OPD_API_URL=http://127.0.0.1:8000 node scripts/verify_websocket.mjs
+```
 
 ## Project Structure
 
@@ -244,7 +248,7 @@ opd-smartqueue/
 
 ## Security and Privacy Boundaries
 
-Passwords are hashed, JWT secrets are loaded from local environment configuration, protected routes enforce role checks, and sensitive queue/vitals data is scoped to the responsible patient or workflow role. Important token and vitals actions produce audit records without logging passwords or JWT values. WebSocket payloads are intentionally limited to the information required by the subscribed party.
+Passwords are hashed, JWT secrets are loaded from local environment configuration, protected routes enforce role checks, login attempts are persistently rate-limited, and sensitive queue/vitals data is scoped to the responsible patient or workflow role. Temperature is stored in a normalized Fahrenheit workflow field; inputs in either 30–45°C or 86–113°F are accepted. Important token and vitals actions produce audit records without logging passwords or JWT values. WebSocket payloads are intentionally limited to the information required by the subscribed party.
 
 This is a development demonstration rather than a certified hospital information system. Production use would require a formal security assessment, healthcare regulatory review, mature user lifecycle controls, operational monitoring, backup/restore policy, clinical governance, and organization-specific privacy safeguards.
 

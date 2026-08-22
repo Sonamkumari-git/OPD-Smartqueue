@@ -23,3 +23,8 @@ class ForbiddenError(AppError):
 class ConflictError(AppError):
     def __init__(self, message: str):
         super().__init__(message, "CONFLICT", status.HTTP_409_CONFLICT)
+
+
+class ServiceUnavailableError(AppError):
+    def __init__(self, message: str = "A required service is unavailable."):
+        super().__init__(message, "SERVICE_UNAVAILABLE", status.HTTP_503_SERVICE_UNAVAILABLE)

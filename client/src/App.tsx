@@ -12,12 +12,14 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
+import Register from "./pages/Register";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/sign-in" component={SignIn} />
+      <Route path="/register" component={Register} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

@@ -1,6 +1,6 @@
 """Workflow-only vital-sign validation; these values are never diagnostic outputs."""
 from datetime import datetime
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class BloodPressure(BaseModel):
@@ -16,10 +16,19 @@ class BloodPressure(BaseModel):
 
 class VitalsCreateRequest(BaseModel):
     token_id: str
-    temperature: float = Field(ge=30.0, le=45.0)
+    temperature: float = Field(ge=30.0, le=113.0, description="Temperature stored in degrees Fahrenheit; Celsius input is normalized.")
     heart_rate: int = Field(ge=20, le=260)
     blood_pressure: BloodPressure
     spo2: int = Field(ge=50, le=100)
+
+    @field_validator("temperature")
+    @classmethod
+    def normalize_temperature(cls, value: float) -> float:
+        if 30.0 <= value <= 45.0:
+            return round((value * 9 / 5) + 32, 1)
+        if 86.0 <= value <= 113.0:
+            return value
+        raise ValueError("Temperature must be between 30–45°C or 86–113°F.")
 
 
 class VitalsPublic(BaseModel):

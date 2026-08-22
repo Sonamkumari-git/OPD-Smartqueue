@@ -24,5 +24,16 @@ async def close_mongo_connection() -> None:
 
 def get_database() -> AsyncIOMotorDatabase:
     if _database is None:
-        raise RuntimeError("MongoDB is not connected. Start MongoDB before starting the API.")
+        from app.utils.errors import ServiceUnavailableError
+        raise ServiceUnavailableError("MongoDB is unavailable; start MongoDB before using operational API endpoints.")
     return _database
+
+
+async def is_mongo_ready() -> bool:
+    if _client is None or _database is None:
+        return False
+    try:
+        await _client.admin.command("ping")
+        return True
+    except Exception:
+        return False

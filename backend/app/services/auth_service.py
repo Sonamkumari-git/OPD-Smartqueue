@@ -1,5 +1,5 @@
 """Registration and JWT login service for patient self-service accounts."""
-from datetime import datetime
+from datetime import datetime, timedelta
 from pymongo.errors import DuplicateKeyError
 from app.auth.security import create_access_token, hash_password, verify_password
 from app.config import get_settings
@@ -48,12 +48,21 @@ class AuthService:
             "created_at": now,
             "updated_at": now,
         })
+        await get_database().audit_logs.insert_one({"user_id": user["_id"], "action": "REGISTER_PATIENT", "entity_type": "user", "entity_id": user["_id"], "metadata": {"email": email}, "timestamp": now})
         return self.issue_token(user)
 
     async def login(self, payload: LoginRequest) -> dict:
-        user = await self.users.get_by_email(payload.email.lower())
+        email = payload.email.lower()
+        db = get_database()
+        now = datetime.now().astimezone()
+        failure_count = await db.audit_logs.count_documents({"action": "LOGIN_FAILED", "metadata.email": email, "timestamp": {"$gte": now - timedelta(seconds=self.settings.login_window_seconds)}})
+        if failure_count >= self.settings.login_max_attempts:
+            raise AppError("Too many unsuccessful login attempts. Please try again later.", "LOGIN_RATE_LIMITED", 429)
+        user = await self.users.get_by_email(email)
         if user is None or not user.get("is_active") or not verify_password(payload.password, user["password_hash"]):
+            await db.audit_logs.insert_one({"user_id": user.get("_id") if user else None, "action": "LOGIN_FAILED", "entity_type": "user", "entity_id": user.get("_id") if user else None, "metadata": {"email": email}, "timestamp": now})
             raise AppError("Invalid email or password.", "INVALID_CREDENTIALS", 401)
+        await db.audit_logs.insert_one({"user_id": user["_id"], "action": "LOGIN_SUCCEEDED", "entity_type": "user", "entity_id": user["_id"], "metadata": {"email": email}, "timestamp": now})
         return self.issue_token(user)
 
     def issue_token(self, user: dict) -> dict:

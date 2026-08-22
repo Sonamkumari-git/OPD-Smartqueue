@@ -12,6 +12,8 @@ def test_priority_precedes_fifo_and_fifo_is_stable_within_priority():
     assert [record["_id"] for record in ordered_tokens(records)] == ["emergency", "high-first", "high-later", "normal-first"]
 
 
-def test_patients_ahead_excludes_the_current_in_consultation_token():
+def test_patients_ahead_counts_all_nonterminal_predecessors_and_excludes_terminal_records():
     records = [token("current", "NORMAL", 0, "IN_CONSULTATION"), token("first-waiting", "NORMAL", 1), token("second-waiting", "NORMAL", 2), token("target", "NORMAL", 3)]
-    assert waiting_patients_ahead(records, "target") == 2
+    assert waiting_patients_ahead(records, "target") == 3
+    terminal = [token("complete", "EMERGENCY", 0, "COMPLETED"), token("skipped", "HIGH", 1, "SKIPPED"), token("cancelled", "NORMAL", 2, "CANCELLED"), token("waiting", "NORMAL", 3), token("target", "NORMAL", 4)]
+    assert waiting_patients_ahead(terminal, "target") == 1

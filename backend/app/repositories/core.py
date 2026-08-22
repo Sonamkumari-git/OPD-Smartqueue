@@ -72,6 +72,9 @@ class QueueRepository:
         document["_id"] = result.inserted_id
         return document
 
+    async def get_token_for_patient(self, token_id: ObjectId, patient_id: ObjectId) -> dict | None:
+        return await self.db.tokens.find_one({"_id": token_id, "patient_id": patient_id})
+
     async def get_token(self, token_id: ObjectId) -> dict | None:
         return await self.db.tokens.find_one({"_id": token_id})
 
@@ -82,11 +85,28 @@ class QueueRepository:
         return await self.db.tokens.find({"doctor_id": doctor_id, "queue_date": queue_date, "status": {"$in": ["WAITING", "CALLED", "IN_CONSULTATION"]}}).sort([("priority_rank", ASCENDING), ("created_at", ASCENDING)]).to_list(length=1000)
 
     async def list_patient_tokens(self, patient_id: ObjectId) -> list[dict]:
-        return await self.db.tokens.find({"patient_id": patient_id}).sort("created_at", DESCENDING).to_list(length=100)
-
-    async def list_waiting_visits(self, queue_date: str) -> list[dict]:
         return await self.db.tokens.aggregate([
-            {"$match": {"queue_date": queue_date, "status": {"$in": ["WAITING", "CALLED", "IN_CONSULTATION"]}}},
+            {"$match": {"patient_id": patient_id}},
+            {"$lookup": {"from": "departments", "localField": "department_id", "foreignField": "_id", "as": "department"}}, {"$unwind": {"path": "$department", "preserveNullAndEmptyArrays": True}},
+            {"$lookup": {"from": "doctors", "localField": "doctor_id", "foreignField": "_id", "as": "doctor"}}, {"$unwind": {"path": "$doctor", "preserveNullAndEmptyArrays": True}},
+            {"$lookup": {"from": "users", "localField": "doctor.user_id", "foreignField": "_id", "as": "doctor_user"}}, {"$unwind": {"path": "$doctor_user", "preserveNullAndEmptyArrays": True}},
+            {"$project": {"token_number": 1, "sequence": 1, "patient_id": 1, "doctor_id": 1, "department_id": 1, "status": 1, "priority": 1, "queue_date": 1, "created_at": 1, "updated_at": 1, "called_at": 1, "consultation_started_at": 1, "completed_at": 1, "cancelled_at": 1, "department_name": "$department.name", "doctor_name": "$doctor_user.name"}}, {"$sort": {"created_at": -1}},
+        ]).to_list(length=100)
+
+    async def doctor_queue_details(self, doctor_id: ObjectId, queue_date: str) -> list[dict]:
+        return await self.db.tokens.aggregate([
+            {"$match": {"doctor_id": doctor_id, "queue_date": queue_date, "status": {"$in": ["WAITING", "CALLED", "IN_CONSULTATION"]}}},
+            {"$lookup": {"from": "patients", "localField": "patient_id", "foreignField": "_id", "as": "patient"}}, {"$unwind": "$patient"},
+            {"$lookup": {"from": "users", "localField": "patient.user_id", "foreignField": "_id", "as": "patient_user"}}, {"$unwind": "$patient_user"},
+            {"$project": {"token_number": 1, "patient_id": 1, "doctor_id": 1, "department_id": 1, "status": 1, "priority": 1, "priority_rank": 1, "queue_date": 1, "created_at": 1, "updated_at": 1, "called_at": 1, "consultation_started_at": 1, "patient_name": "$patient_user.name"}}, {"$sort": {"priority_rank": 1, "created_at": 1}},
+        ]).to_list(length=1000)
+
+    async def list_waiting_visits(self, queue_date: str, department_ids: list[ObjectId] | None = None) -> list[dict]:
+        match: dict[str, Any] = {"queue_date": queue_date, "status": {"$in": ["WAITING", "CALLED", "IN_CONSULTATION"]}}
+        if department_ids:
+            match["department_id"] = {"$in": department_ids}
+        return await self.db.tokens.aggregate([
+            {"$match": match},
             {"$lookup": {"from": "patients", "localField": "patient_id", "foreignField": "_id", "as": "patient"}},
             {"$unwind": "$patient"},
             {"$lookup": {"from": "users", "localField": "patient.user_id", "foreignField": "_id", "as": "patient_user"}},
@@ -95,14 +115,23 @@ class QueueRepository:
             {"$sort": {"created_at": 1}},
         ]).to_list(length=500)
 
-    async def doctor_has_patient(self, doctor_id: ObjectId, patient_id: ObjectId) -> bool:
-        return await self.db.tokens.find_one({"doctor_id": doctor_id, "patient_id": patient_id}) is not None
+    async def doctor_has_active_patient(self, doctor_id: ObjectId, patient_id: ObjectId, queue_date: str) -> bool:
+        return await self.db.tokens.find_one({"doctor_id": doctor_id, "patient_id": patient_id, "queue_date": queue_date, "status": {"$in": ["CALLED", "IN_CONSULTATION"]}}) is not None
 
     async def patient_is_active_today(self, patient_id: ObjectId, queue_date: str) -> bool:
         return await self.db.tokens.find_one({"patient_id": patient_id, "queue_date": queue_date, "status": {"$in": ["WAITING", "CALLED", "IN_CONSULTATION"]}}) is not None
 
     async def atomically_transition(self, token_id: ObjectId, doctor_id: ObjectId, expected_statuses: list[str], next_status: str, fields: dict) -> dict | None:
         return await self.db.tokens.find_one_and_update({"_id": token_id, "doctor_id": doctor_id, "status": {"$in": expected_statuses}}, {"$set": {"status": next_status, **fields}}, return_document=ReturnDocument.AFTER)
+
+    async def cancel_token_for_patient(self, token_id: ObjectId, patient_id: ObjectId, now: datetime) -> dict | None:
+        return await self.db.tokens.find_one_and_update({"_id": token_id, "patient_id": patient_id, "status": "WAITING"}, {"$set": {"status": "CANCELLED", "cancelled_at": now, "updated_at": now}}, return_document=ReturnDocument.AFTER)
+
+    async def update_priority(self, token_id: ObjectId, priority: str, priority_rank: int, allowed_doctor_id: ObjectId | None = None) -> dict | None:
+        query: dict[str, Any] = {"_id": token_id, "status": "WAITING"}
+        if allowed_doctor_id is not None:
+            query["doctor_id"] = allowed_doctor_id
+        return await self.db.tokens.find_one_and_update(query, {"$set": {"priority": priority, "priority_rank": priority_rank, "updated_at": datetime.now().astimezone()}}, return_document=ReturnDocument.AFTER)
 
     async def call_next(self, doctor_id: ObjectId, queue_date: str, now: datetime) -> dict | None:
         candidate = await self.db.tokens.find_one({"doctor_id": doctor_id, "queue_date": queue_date, "status": "WAITING"}, sort=[("priority_rank", ASCENDING), ("created_at", ASCENDING)])
@@ -148,6 +177,13 @@ class NotificationRepository:
 
     async def find_recent_type(self, user_id: ObjectId, token_id: ObjectId, notification_type: str) -> dict | None:
         return await self.db.notifications.find_one({"user_id": user_id, "token_id": token_id, "type": notification_type}, sort=[("created_at", DESCENDING)])
+
+    async def mark_read(self, notification_id: ObjectId, user_id: ObjectId) -> dict | None:
+        return await self.db.notifications.find_one_and_update({"_id": notification_id, "user_id": user_id}, {"$set": {"is_read": True, "read_at": datetime.now().astimezone()}}, return_document=ReturnDocument.AFTER)
+
+    async def mark_all_read(self, user_id: ObjectId) -> int:
+        result = await self.db.notifications.update_many({"user_id": user_id, "is_read": False}, {"$set": {"is_read": True, "read_at": datetime.now().astimezone()}})
+        return result.modified_count
 
     async def list_for_user(self, user_id: ObjectId) -> list[dict]:
         return await self.db.notifications.find({"user_id": user_id}).sort("created_at", DESCENDING).to_list(length=100)
