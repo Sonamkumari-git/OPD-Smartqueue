@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useLocation } from "wouter";
 
 const roles = [
   {
@@ -72,6 +73,7 @@ function BrandMark() {
 }
 
 export default function Home() {
+  const [, navigate] = useLocation();
   const [selectedRole, setSelectedRole] = useState(roles[0].name);
   const activeRole = roles.find((role) => role.name === selectedRole) ?? roles[0];
 
@@ -91,7 +93,7 @@ export default function Home() {
             LIVE-READY DESIGN
           </div>
         </div>
-        <Button className="rounded-full bg-[#15334A] px-5 font-bold text-white shadow-[0_10px_25px_rgba(21,51,74,0.16)] hover:bg-[#0F8F83]" onClick={() => { window.location.href = "/sign-in"; }}>Explore demo <ArrowRight className="ml-1 h-4 w-4" /></Button>
+        <Button className="rounded-full bg-[#15334A] px-5 font-bold text-white shadow-[0_10px_25px_rgba(21,51,74,0.16)] hover:bg-[#0F8F83]" onClick={() => navigate("/sign-in")}>Explore demo <ArrowRight className="ml-1 h-4 w-4" /></Button>
       </header>
 
       <main>
