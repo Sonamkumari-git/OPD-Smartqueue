@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     app_env: str = "development"
     mongodb_url: str = "mongodb://localhost:27017"
+    mongodb_server_selection_timeout_ms: int = 15000
     database_name: str = "opd_queue_management"
     jwt_secret: str = "change_this_in_local_env"
     jwt_algorithm: str = "HS256"

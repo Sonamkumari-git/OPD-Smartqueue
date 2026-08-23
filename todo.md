@@ -18,6 +18,6 @@
 - [x] Fix the deployed Render “Explore demo” navigation so the sign-in route does not show Not Found.
 - [x] Replace role preview shortcuts with real role-aware sign-in access and authenticated role-specific dashboards.
 - [x] Fix the deployed patient-registration validation failure and deploy clear browser-side and API field feedback.
-- [ ] Inspect the existing MongoDB model and create a schema-compatible, idempotent seed workflow for Atlas.
-- [ ] Seed the configured Atlas database with coherent departments, users, clinicians, patient profiles, queues, tokens, vitals, notifications, and analytics inputs.
-- [ ] Validate the deployed API, frontend role workflows, authorization, queue lifecycle, and WebSocket events against actual Atlas records; fix and retest any failures.
+- [x] Inspect the existing MongoDB model and create a schema-compatible, idempotent seed workflow for Atlas.
+- [x] Seed the configured Atlas database with coherent departments, users, clinicians, patient profiles, queues, tokens, vitals, notifications, and analytics inputs.
+- [x] Validate the deployed API, frontend role workflows, authorization, queue lifecycle, and WebSocket events against actual Atlas records; fix and retest any failures.

@@ -9,6 +9,7 @@
 const base = (process.env.OPD_API_URL ?? "http://127.0.0.1:8001").replace(/\/$/, "");
 const password = process.env.OPD_TEST_PASSWORD;
 const domain = "opdsmartqueue.example.com";
+const requestTimeoutMs = 60_000;
 
 if (!password || password.length < 8) throw new Error("OPD_TEST_PASSWORD must contain the seed-account password.");
 
@@ -17,16 +18,29 @@ function assert(condition, message) {
 }
 
 async function request(path, options = {}, accessToken) {
-  const response = await fetch(`${base}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      ...(options.headers ?? {}),
-    },
+  const url = new URL(`${base}${path}`);
+  const client = await import(url.protocol === "https:" ? "node:https" : "node:http");
+  const headers = {
+    "Content-Type": "application/json",
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    ...(options.headers ?? {}),
+  };
+  return new Promise((resolve, reject) => {
+    const outgoing = client.request(url, { method: options.method ?? "GET", headers }, (incoming) => {
+      const chunks = [];
+      incoming.on("data", (chunk) => chunks.push(chunk));
+      incoming.on("end", () => {
+        const text = Buffer.concat(chunks).toString("utf8");
+        let body = null;
+        try { body = JSON.parse(text); } catch { /* surfaced by status/error assertion below */ }
+        resolve({ response: { status: incoming.statusCode ?? 0, ok: (incoming.statusCode ?? 0) >= 200 && (incoming.statusCode ?? 0) < 300 }, body });
+      });
+    });
+    outgoing.setTimeout(requestTimeoutMs, () => outgoing.destroy(new Error(`Request timed out after ${requestTimeoutMs}ms: ${path}`)));
+    outgoing.on("error", reject);
+    if (options.body) outgoing.write(options.body);
+    outgoing.end();
   });
-  const body = await response.json().catch(() => null);
-  return { response, body };
 }
 
 async function api(path, options = {}, accessToken) {
@@ -59,8 +73,8 @@ function waitForEvent(socket, eventName, timeoutMs = 10_000) {
   });
 }
 
-const health = await fetch(`${base}/health`).then((response) => response.json());
-const ready = await fetch(`${base}/ready`).then((response) => response.json());
+const health = (await request("/health")).body;
+const ready = (await request("/ready")).body;
 assert(health?.success && health.data?.database_ready, "Health endpoint did not report a ready MongoDB connection.");
 assert(ready?.success && ready.data?.ready, "Readiness endpoint did not report a ready service.");
 
