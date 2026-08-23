@@ -22,3 +22,4 @@
 - [x] Seed the configured Atlas database with coherent departments, users, clinicians, patient profiles, queues, tokens, vitals, notifications, and analytics inputs.
 - [x] Validate the deployed API, frontend role workflows, authorization, queue lifecycle, and WebSocket events against actual Atlas records; fix and retest any failures.
 - [x] Replace shared local browser authentication persistence with tab-scoped session storage so concurrent role tabs remain independent.
+- [ ] Replace misleading in-consultation patient wait estimates and return guidance with a consultation-in-progress status.

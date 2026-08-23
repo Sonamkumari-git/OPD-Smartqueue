@@ -1,5 +1,6 @@
 """Queue, token, department, doctor, and notification API contracts."""
 from datetime import datetime
+from typing import Literal
 from pydantic import BaseModel
 from app.schemas.common import DoctorStatus, Priority, TokenStatus
 
@@ -59,6 +60,7 @@ class QueuePosition(BaseModel):
     estimate_upper_minutes: int
     recommended_return_at: datetime | None
     estimate_notice: str
+    patient_guidance: Literal["WAITING", "CALLED", "IN_CONSULTATION"]
 
 
 class QueueStatePublic(BaseModel):

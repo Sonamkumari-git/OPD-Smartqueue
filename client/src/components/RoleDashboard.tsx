@@ -7,6 +7,7 @@ import { type Role } from "@/services/api";
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 import Dashboard from "@/pages/Dashboard";
+import PatientDashboard from "@/pages/PatientDashboard";
 
 export default function RoleDashboard({ requiredRole }: { requiredRole?: Role }) {
   const { user, ready } = useSession();
@@ -22,5 +23,5 @@ export default function RoleDashboard({ requiredRole }: { requiredRole?: Role })
   }, [navigate, ready, requiredRole, user]);
 
   if (!ready || !user || (requiredRole && user.role !== requiredRole)) return <div className="min-h-screen bg-[#F6F4EE]" />;
-  return <Dashboard />;
+  return user.role === "patient" ? <PatientDashboard /> : <Dashboard />;
 }

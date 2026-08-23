@@ -75,6 +75,13 @@ class QueueService:
         doctor = await self.catalog.get_doctor(token["doctor_id"])
         department = await self.catalog.get_department(token["department_id"])
         state = await self.repository.get_queue_state(token["doctor_id"], token["queue_date"])
+        current_time = datetime.now().astimezone()
+        current_status = token["status"]
+        common = {"token_id": str(token["_id"]), "token_number": token["token_number"], "position": index + 1 if index is not None else None, "queue_length": len(active), "currently_serving": state.get("current_token") if state else None, "doctor_status": doctor.get("status", "OFFLINE") if doctor else "OFFLINE"}
+        if current_status == "IN_CONSULTATION":
+            return {**common, "patients_ahead": 0, "consultation_in_progress_ahead": False, "baseline_wait_minutes": 0, "estimated_wait_minutes": 0, "estimate_lower_minutes": 0, "estimate_upper_minutes": 0, "model_version": "not_applicable", "prediction_source": "baseline", "recommended_return_at": None, "estimate_notice": "Your consultation is currently in progress.", "patient_guidance": "IN_CONSULTATION"}
+        if current_status == "CALLED":
+            return {**common, "patients_ahead": 0, "consultation_in_progress_ahead": False, "baseline_wait_minutes": 0, "estimated_wait_minutes": 0, "estimate_lower_minutes": 0, "estimate_upper_minutes": 0, "model_version": "not_applicable", "prediction_source": "baseline", "recommended_return_at": None, "estimate_notice": "You have been called. Please proceed to the consultation area.", "patient_guidance": "CALLED"}
         predecessors = active[:index] if index is not None else []
         patients_ahead = sum(1 for item in predecessors if item["status"] in {"WAITING", "CALLED", "IN_CONSULTATION"})
         consultation_in_progress = any(item["status"] == "IN_CONSULTATION" for item in predecessors)
@@ -82,11 +89,10 @@ class QueueService:
         profile = await self.analytics.consultation_feature_profile(token["doctor_id"], token["department_id"], token["queue_date"])
         expected_minutes = await self.analytics.expected_consultation_minutes(token["doctor_id"], token["department_id"], token["queue_date"])
         baseline_minutes = service_units_ahead * expected_minutes
-        current_time = datetime.now().astimezone()
         model_estimate = predict_wait_time({"department_code": department.get("code", "UNKNOWN") if department else "UNKNOWN", "hour": current_time.hour, "minute": current_time.minute, "day_of_week": current_time.weekday(), "patients_ahead": service_units_ahead, "queue_length": len(active), **profile, "current_doctor_status": doctor.get("status", "OFFLINE") if doctor else "OFFLINE"}, baseline_minutes)
         estimated = model_estimate["predicted_wait_minutes"]
         recommended = current_time + timedelta(minutes=estimated) if token["status"] == "WAITING" else None
-        return {"token_id": str(token["_id"]), "token_number": token["token_number"], "position": index + 1 if index is not None else None, "patients_ahead": patients_ahead, "consultation_in_progress_ahead": consultation_in_progress, "queue_length": len(active), "currently_serving": state.get("current_token") if state else None, "doctor_status": doctor.get("status", "OFFLINE") if doctor else "OFFLINE", "baseline_wait_minutes": baseline_minutes, "estimated_wait_minutes": estimated, "estimate_lower_minutes": model_estimate["prediction_lower"], "estimate_upper_minutes": model_estimate["prediction_upper"], "model_version": model_estimate["model_version"], "prediction_source": model_estimate["prediction_source"], "recommended_return_at": recommended, "estimate_notice": "Waiting time is an estimate and may change with real-time queue conditions."}
+        return {**common, "patients_ahead": patients_ahead, "consultation_in_progress_ahead": consultation_in_progress, "baseline_wait_minutes": baseline_minutes, "estimated_wait_minutes": estimated, "estimate_lower_minutes": model_estimate["prediction_lower"], "estimate_upper_minutes": model_estimate["prediction_upper"], "model_version": model_estimate["model_version"], "prediction_source": model_estimate["prediction_source"], "recommended_return_at": recommended, "estimate_notice": "Waiting time is an estimate and may change with real-time queue conditions.", "patient_guidance": "WAITING"}
 
     async def refresh_and_broadcast(self, doctor_id: ObjectId, department_id: ObjectId, queue_date: str) -> dict:
         active = await self.repository.ordered_active_tokens(doctor_id, queue_date)

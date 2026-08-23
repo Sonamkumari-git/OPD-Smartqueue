@@ -63,3 +63,9 @@
 [2026-08-23T14:38:54.420Z] 2:38:54 PM [vite] (client) hmr invalidate /src/contexts/SessionContext.tsx Could not Fast Refresh ("useSession" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
 [2026-08-23T14:38:54.421Z] 2:38:54 PM [vite] (client) hmr update /src/App.tsx, /src/pages/SignIn.tsx, /src/pages/Dashboard.tsx, /src/pages/Register.tsx, /src/components/RoleDashboard.tsx
 [2026-08-23T14:39:36.959Z] 2:39:36 PM [vite] (client) hmr update /src/index.css
+[2026-08-23T14:44:13.043Z] 2:44:13 PM [vite] (client) hmr update /src/index.css
+[2026-08-23T15:00:55.769Z] 3:00:55 PM [vite] (client) hmr update /src/index.css, /src/contexts/SessionContext.tsx, /src/pages/Dashboard.tsx
+[2026-08-23T15:00:57.651Z] 3:00:57 PM [vite] (client) hmr invalidate /src/contexts/SessionContext.tsx Could not Fast Refresh ("useSession" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+[2026-08-23T15:00:57.651Z] 3:00:57 PM [vite] (client) hmr update /src/App.tsx, /src/pages/SignIn.tsx, /src/pages/Dashboard.tsx, /src/pages/Register.tsx, /src/components/RoleDashboard.tsx
+[2026-08-23T15:02:47.986Z] 3:02:47 PM [vite] (client) hmr update /src/index.css, /src/components/RoleDashboard.tsx
+[2026-08-23T15:04:35.728Z] 3:04:35 PM [vite] (client) hmr update /src/index.css

@@ -84,6 +84,26 @@ def test_consultation_completion_calculates_duration_with_persisted_timestamps()
     asyncio.run(scenario())
 
 
+def test_called_and_in_consultation_positions_do_not_publish_wait_estimates():
+    async def scenario():
+        db, fixture = await reset_database(); patient_user, patient = await create_patient(db, 1)
+        await insert_waiting_token(db, fixture, patient_user, patient, 1)
+        service = QueueService()
+        called = await service.call_next(fixture["doctor_user"])
+        called_position = await service.position(called)
+        assert called_position["patient_guidance"] == "CALLED"
+        assert called_position["estimated_wait_minutes"] == 0
+        assert called_position["recommended_return_at"] is None
+        assert "called" in called_position["estimate_notice"].lower()
+        started = await service.transition_current(fixture["doctor_user"], called["_id"], ["CALLED"], "IN_CONSULTATION")
+        consultation_position = await service.position(started)
+        assert consultation_position["patient_guidance"] == "IN_CONSULTATION"
+        assert consultation_position["estimated_wait_minutes"] == 0
+        assert consultation_position["recommended_return_at"] is None
+        assert "consultation" in consultation_position["estimate_notice"].lower()
+    asyncio.run(scenario())
+
+
 def test_notification_dedupe_is_atomic_under_concurrency():
     async def scenario():
         db, fixture = await reset_database(); patient_user, patient = await create_patient(db, 1); token = await insert_waiting_token(db, fixture, patient_user, patient, 1)
