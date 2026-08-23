@@ -152,6 +152,15 @@ async def upsert_today_queue(departments: dict[str, dict], doctors: dict[str, di
     db = get_database()
     timestamp = now()
     queue_date = timestamp.date().isoformat()
+    # A previous end-to-end run may have left one of our own seed tokens in a
+    # CALLED/IN_CONSULTATION state. Normalize only this namespace before the
+    # canonical snapshot below assigns its one intended current patient. This
+    # keeps the partial unique doctor/current/day invariant valid on reruns and
+    # never alters unlabelled operational tokens.
+    await db.tokens.update_many(
+        {"seed_namespace": SEED_NAMESPACE, "queue_date": queue_date, "status": {"$in": ["CALLED", "IN_CONSULTATION"]}},
+        {"$set": {"status": "WAITING", "called_at": None, "consultation_started_at": None, "updated_at": timestamp}},
+    )
     queue_specs = [
         ("doctor_card", "C", 0, "IN_CONSULTATION", "NORMAL"),
         ("doctor_card", "C", 1, "WAITING", "HIGH"),
