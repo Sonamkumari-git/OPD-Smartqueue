@@ -1,0 +1,36 @@
+services:
+  - type: web
+    runtime: python
+    name: opd-smartqueue-api
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_NAME
+        value: opd_queue_management
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: LOGIN_MAX_ATTEMPTS
+        value: "8"
+      - key: LOGIN_WINDOW_SECONDS
+        value: "300"
+  - type: web
+    runtime: static
+    name: opd-smartqueue-web
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    staticPublishPath: dist/public
+    autoDeploy: true
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
