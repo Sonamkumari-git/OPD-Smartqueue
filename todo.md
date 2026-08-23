@@ -17,4 +17,4 @@
 - [x] Confirm frontend-to-backend API configuration and document the deployed backend endpoint.
 - [x] Fix the deployed Render “Explore demo” navigation so the sign-in route does not show Not Found.
 - [x] Replace role preview shortcuts with real role-aware sign-in access and authenticated role-specific dashboards.
-- [ ] Fix the deployed patient-registration request failure and verify a successful account creation flow.
+- [x] Fix the deployed patient-registration validation failure and deploy clear browser-side and API field feedback.
