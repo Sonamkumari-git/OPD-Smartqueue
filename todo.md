@@ -9,3 +9,5 @@
 - [x] Add MongoDB integration, concurrency, authorization, WebSocket, and ML contract tests.
 - [x] Validate end-to-end behavior, update documentation, visually verify the UI, and deliver a checkpoint.
 - [ ] Push the completed source tree to the user-provided GitHub repository and verify the remote commit.
+- [ ] Prepare Render configuration for the frontend, FastAPI service, production environment variables, and managed MongoDB connection.
+- [ ] Create and verify the Render deployment with user-authorized account access.
