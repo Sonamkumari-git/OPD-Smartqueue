@@ -15,4 +15,4 @@
 - [ ] Inspect the Render deployment failure, correct the underlying project or configuration issue, and verify the redeploy.
 - [x] Verify the separate Render FastAPI backend deployment, MongoDB readiness, and public operational endpoints.
 - [x] Confirm frontend-to-backend API configuration and document the deployed backend endpoint.
-- [ ] Fix the deployed Render “Explore demo” navigation so the sign-in route does not show Not Found.
+- [x] Fix the deployed Render “Explore demo” navigation so the sign-in route does not show Not Found.
