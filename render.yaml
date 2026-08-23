@@ -28,7 +28,7 @@ services:
   - type: web
     runtime: static
     name: opd-smartqueue-web
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    buildCommand: npx --yes pnpm@10.4.1 install --frozen-lockfile && npx --yes pnpm@10.4.1 build
     staticPublishPath: dist/public
     autoDeploy: true
     envVars:

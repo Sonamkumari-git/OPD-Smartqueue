@@ -11,3 +11,5 @@
 - [ ] Push the completed source tree to the user-provided GitHub repository and verify the remote commit.
 - [ ] Prepare Render configuration for the frontend, FastAPI service, production environment variables, and managed MongoDB connection.
 - [ ] Create and verify the Render deployment with user-authorized account access.
+- [ ] Create and verify the user-requested Render account before importing the deployment Blueprint.
+- [ ] Inspect the Render deployment failure, correct the underlying project or configuration issue, and verify the redeploy.
