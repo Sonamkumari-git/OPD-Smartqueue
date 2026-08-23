@@ -33,3 +33,9 @@
 [2026-08-22T17:13:28.297Z] 5:13:28 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
 [2026-08-22T17:14:40.966Z] 5:14:40 PM [vite] (client) hmr update /src/index.css
 [2026-08-23T06:17:55.686Z] 6:17:55 AM [vite] (client) hmr update /src/index.css
+[2026-08-23T06:25:05.072Z] 6:25:05 AM [vite] (client) page reload index.html
+[2026-08-23T06:25:05.104Z] 6:25:05 AM [vite] (client) hmr update /src/pages/SignIn.tsx, /src/index.css
+[2026-08-23T06:25:05.105Z] 6:25:05 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+[2026-08-23T06:25:05.111Z] 6:25:05 AM [vite] (client) hmr update /src/pages/Home.tsx, /src/index.css
+[2026-08-23T06:25:06.378Z] 6:25:06 AM [vite] (client) hmr update /src/pages/Register.tsx, /src/index.css
+[2026-08-23T06:25:32.832Z] 6:25:32 AM [vite] (client) hmr update /src/index.css

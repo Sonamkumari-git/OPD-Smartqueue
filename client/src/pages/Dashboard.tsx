@@ -18,7 +18,7 @@ const initialPatient: PatientState = { tokens: [], active: null, position: null,
 const stamp = (value?: string | null) => value ? new Date(value).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "—";
 const elapsed = (value?: string | null) => { if (!value) return "00:00"; const seconds = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / 1000)); return `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`; };
 
-function Brand() { return <div className="flex items-center gap-2.5"><img src="/manus-storage/opd-queue-pulse-logo_b3eb1b9c.png" alt="OPD SmartQueue logo" className="h-9 w-9" /><span className="text-[15px] font-extrabold tracking-[-0.055em]">OPD SmartQueue</span></div>; }
+function Brand() { return <div className="flex items-center gap-2.5"><img src="/queue-assets/queue-pulse-logo.webp" alt="OPD SmartQueue logo" className="h-9 w-9" /><span className="text-[15px] font-extrabold tracking-[-0.055em]">OPD SmartQueue</span></div>; }
 function StatusPill({ status }: { status: string }) { const live = status === "connected"; return <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] ${live ? "bg-[#DDF3EE] text-[#0F8F83]" : "bg-[#FFF2D8] text-[#9D6A10]"}`}><span className={`h-1.5 w-1.5 rounded-full ${live ? "bg-[#0F8F83]" : "bg-[#D7951D]"}`} />{live ? "Live" : status}</span>; }
 function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) { return <section className={`rounded-[1.65rem] border border-[#15334A]/10 bg-white p-5 shadow-[0_10px_28px_rgba(21,51,74,0.035)] ${className}`}>{children}</section>; }
 

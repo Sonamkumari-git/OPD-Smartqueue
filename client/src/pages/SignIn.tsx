@@ -33,8 +33,8 @@ export default function SignIn() {
   return <div className="min-h-screen bg-[#F6F4EE] text-[#15334A]">
     <div className="grid min-h-screen lg:grid-cols-[0.9fr_1.1fr]">
       <aside className="relative hidden overflow-hidden bg-[#15334A] p-12 text-white lg:flex lg:flex-col">
-        <img src="/manus-storage/opd-queue-pulse-texture_6d0de524.png" alt="" className="absolute inset-0 h-full w-full object-cover opacity-25 mix-blend-screen" />
-        <div className="relative flex items-center gap-3"><img src="/manus-storage/opd-queue-pulse-logo_b3eb1b9c.png" alt="OPD SmartQueue logo" className="h-11 w-11" /><p className="text-lg font-extrabold tracking-[-0.05em]">OPD SmartQueue</p></div>
+        <img src="/queue-assets/queue-pulse-texture.webp" alt="" className="absolute inset-0 h-full w-full object-cover opacity-25 mix-blend-screen" />
+        <div className="relative flex items-center gap-3"><img src="/queue-assets/queue-pulse-logo.webp" alt="OPD SmartQueue logo" className="h-11 w-11" /><p className="text-lg font-extrabold tracking-[-0.05em]">OPD SmartQueue</p></div>
         <div className="relative my-auto max-w-md"><p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#76D6CB]">Care access</p><h1 className="mt-5 font-[Fraunces] text-5xl font-semibold leading-tight tracking-[-0.05em]">Enter the queue with the context you need.</h1><p className="mt-6 leading-7 text-white/65">Patient access protects personal queue information. Clinical roles receive only the operational tools appropriate to their workflow.</p></div>
         <div className="relative flex items-center gap-3 border-t border-white/15 pt-6 text-xs font-bold text-white/65"><ShieldCheck className="h-4 w-4 text-[#76D6CB]" /> Demonstration interface; not a clinical decision system.</div>
       </aside>

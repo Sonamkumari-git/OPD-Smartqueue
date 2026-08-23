@@ -59,7 +59,7 @@ function BrandMark() {
   return (
     <div className="flex items-center gap-3">
       <img
-        src="/manus-storage/opd-queue-pulse-logo_b3eb1b9c.png"
+        src="/queue-assets/queue-pulse-logo.webp"
         alt="OPD SmartQueue queue pulse logo"
         className="h-11 w-11 object-contain"
       />
@@ -123,7 +123,7 @@ export default function Home() {
 
           <div className="relative z-10 min-h-[430px] lg:min-h-[590px]">
             <div className="absolute right-[-7rem] top-[-4rem] h-[36rem] w-[36rem] rounded-full bg-[#DDEFEA] blur-3xl" />
-            <img src="/manus-storage/opd-clinical-hero_9a2f40fe.png" alt="Abstract outpatient care environment" className="absolute inset-0 h-full w-full rounded-[2.25rem] object-cover object-right shadow-[0_28px_70px_rgba(21,51,74,0.18)]" />
+            <img src="/queue-assets/clinical-hero.webp" alt="Abstract outpatient care environment" className="absolute inset-0 h-full w-full rounded-[2.25rem] object-cover object-right shadow-[0_28px_70px_rgba(21,51,74,0.18)]" />
             <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-tr from-[#15334A]/70 via-[#15334A]/5 to-transparent" />
             <div className="absolute bottom-5 left-5 right-5 rounded-[1.6rem] border border-white/25 bg-white/88 p-5 shadow-xl backdrop-blur-xl sm:bottom-8 sm:left-8 sm:right-auto sm:w-[310px]">
               <div className="flex items-center justify-between">
@@ -141,7 +141,7 @@ export default function Home() {
         </section>
 
         <section id="workflow" className="relative overflow-hidden bg-[#15334A] py-18 text-white lg:py-24">
-          <img src="/manus-storage/opd-queue-pulse-texture_6d0de524.png" alt="" className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-screen" />
+          <img src="/queue-assets/queue-pulse-texture.webp" alt="" className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-screen" />
           <div className="relative mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
             <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
               <div><p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#76D6CB]">A role-specific care rail</p><h2 className="mt-4 max-w-sm font-[Fraunces] text-4xl font-semibold leading-tight tracking-[-0.04em] sm:text-5xl">One shared queue. Four clear responsibilities.</h2></div>
@@ -160,7 +160,7 @@ export default function Home() {
                 <div className="mt-7 flex items-center gap-3 border-t border-white/10 pt-5 text-xs font-bold text-[#76D6CB]"><CheckCircle2 className="h-4 w-4" /> {activeRole.detail}</div>
               </div>
               <div className="relative min-h-[300px] overflow-hidden rounded-[2rem] bg-[#F6F4EE] p-6 text-[#15334A] sm:p-8">
-                <img src="/manus-storage/opd-patient-mobile-queue_46908a89.png" alt="Abstract patient queue interface on a mobile phone" className="absolute bottom-0 right-0 h-full w-[54%] object-cover object-left opacity-90" />
+                <img src="/queue-assets/patient-mobile-queue.webp" alt="Abstract patient queue interface on a mobile phone" className="absolute bottom-0 right-0 h-full w-[54%] object-cover object-left opacity-90" />
                 <div className="relative max-w-[48%]"><p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#15334A]/45">Patient first</p><p className="mt-3 font-[Fraunces] text-3xl font-semibold leading-tight tracking-[-0.04em]">Queue visibility that lets people step away with confidence.</p><div className="mt-6 flex items-center gap-2 text-xs font-extrabold text-[#0F8F83]"><BellRing className="h-4 w-4" /> Approaching and called alerts</div></div>
               </div>
             </div>
