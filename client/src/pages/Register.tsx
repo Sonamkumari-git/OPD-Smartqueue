@@ -14,10 +14,12 @@ export default function Register() {
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
+    if (form.name.trim().length < 2) return toast.error("Full name must contain at least 2 characters.");
+    if (form.password.length < 8) return toast.error("Password must contain at least 8 characters.");
     if (form.password !== form.confirm) return toast.error("Password confirmation does not match.");
     setBusy(true);
     try {
-      const user = await register({ name: form.name, email: form.email, phone: form.phone || undefined, password: form.password });
+      const user = await register({ name: form.name.trim(), email: form.email.trim().toLowerCase(), phone: form.phone.trim() || undefined, password: form.password });
       toast.success(`Welcome, ${user.name}. Your patient workspace is ready.`);
       navigate("/dashboard/patient");
     } catch (error) {
@@ -34,6 +36,7 @@ export default function Register() {
         required={key !== "phone"}
         value={form[key]}
         type={type}
+        minLength={key === "name" ? 2 : key === "password" || key === "confirm" ? 8 : undefined}
         onChange={(event) => setForm({ ...form, [key]: event.target.value })}
         className="mt-2 h-12 w-full rounded-xl border border-[#15334A]/13 bg-[#F8F8F6] px-4 text-sm font-semibold normal-case tracking-normal outline-none transition focus:border-[#0F8F83] focus:ring-4 focus:ring-[#0F8F83]/10"
       />
@@ -52,7 +55,7 @@ export default function Register() {
           <button onClick={() => navigate("/sign-in")} className="flex items-center gap-2 text-xs font-extrabold text-[#15334A]/55 hover:text-[#0F8F83]"><ArrowLeft className="h-4 w-4" /> Back to sign in</button>
           <div className="mt-10 flex items-start justify-between"><div><p className="text-[11px] font-extrabold uppercase tracking-[0.17em] text-[#0F8F83]">Patient registration</p><h2 className="mt-3 font-[Fraunces] text-4xl font-semibold tracking-[-0.05em]">Set up secure access.</h2></div><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#E0F3EF] text-[#0F8F83]"><UserPlus className="h-5 w-5" /></div></div>
           <form onSubmit={submit} className="mt-8 grid gap-4 sm:grid-cols-2">
-            {input("Full name", "name")}{input("Email", "email", "email")}{input("Phone (optional)", "phone", "tel")}{input("Password", "password", "password")}
+            {input("Full name", "name")}{input("Email", "email", "email")}{input("Phone (optional)", "phone", "tel")}{input("Password (minimum 8 characters)", "password", "password")}
             <div className="sm:col-span-2">{input("Confirm password", "confirm", "password")}</div>
             <Button disabled={busy} className="sm:col-span-2 mt-2 h-12 rounded-xl bg-[#0F8F83] font-extrabold text-white hover:bg-[#0C756C]">{busy ? "Creating your account…" : "Create patient account"}<ArrowRight className="ml-1 h-4 w-4" /></Button>
           </form>

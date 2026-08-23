@@ -16,12 +16,23 @@ export type Vitals = { id: string; patient_id: string; token_id: string; recorde
 export type NurseVisit = { id: string; token_number: string; patient_id: string; doctor_id: string; department_id: string; patient_name: string; status: TokenStatus; created_at: string };
 export type AnalyticsOverview = { total_tokens: number; total_patients: number; patients_waiting: number; patients_in_service: number; consultations_completed: number; skipped_tokens: number; cancelled_tokens: number; active_doctors: number; average_wait_minutes: number; maximum_wait_minutes: number; average_consultation_minutes: number };
 export type Trends = { hourly_arrivals: Array<{ hour: number; patients: number }>; waiting_time_trend: Array<{ hour: number; average_wait_minutes: number }>; consultation_duration_trend: Array<{ hour: number; average_consultation_minutes: number }> };
-type Envelope<T> = { success: boolean; data: T; message?: string; error_code?: string };
+type ValidationDetail = { loc?: Array<string | number>; msg?: string };
+type Envelope<T> = { success: boolean; data: T; message?: string; error_code?: string; details?: ValidationDetail[] };
+
+function messageForError(body: Envelope<unknown> | null) {
+  const detail = body?.details?.[0];
+  if (detail?.msg) {
+    const field = detail.loc?.at(-1);
+    const label = typeof field === "string" ? field.replace(/_/g, " ") : "Input";
+    return `${label.charAt(0).toUpperCase()}${label.slice(1)}: ${detail.msg}.`;
+  }
+  return body?.message ?? "The service is currently unavailable.";
+}
 
 async function request<T>(path: string, options: RequestInit = {}, accessToken?: string | null): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, { ...options, headers: { "Content-Type": "application/json", ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}), ...(options.headers ?? {}) } });
   const body = (await response.json().catch(() => null)) as Envelope<T> | null;
-  if (!response.ok || !body?.success) throw new Error(body?.message ?? "The service is currently unavailable.");
+  if (!response.ok || !body?.success) throw new Error(messageForError(body));
   return body.data;
 }
 const query = (values: Record<string, string | undefined>) => {

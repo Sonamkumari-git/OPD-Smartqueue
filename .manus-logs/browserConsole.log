@@ -214,3 +214,15 @@
 [2026-08-23T07:33:09.247Z] {"timestamp":1787470388439,"level":"DEBUG","args":["[vite]","hot updated: /src/index.css"],"stack":null}
 [2026-08-23T07:35:18.261Z] {"timestamp":1787470516861,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
 [2026-08-23T07:35:18.261Z] {"timestamp":1787470518407,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T07:35:22.253Z] {"timestamp":1787470521442,"level":"DEBUG","args":["[vite]","hot updated: /src/index.css"],"stack":null}
+[2026-08-23T07:35:22.353Z] {"timestamp":1787470520301,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T07:35:22.353Z] {"timestamp":1787470520305,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T07:35:22.353Z] {"timestamp":1787470520420,"level":"INFO","args":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"],"stack":null}
+[2026-08-23T07:40:44.039Z] {"timestamp":1787470842644,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T07:40:44.039Z] {"timestamp":1787470843364,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T07:40:51.245Z] {"timestamp":1787470848985,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T07:40:51.245Z] {"timestamp":1787470850440,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T07:42:21.252Z] {"timestamp":1787470941579,"level":"DEBUG","args":["[vite]","hot updated: /src/pages/Register.tsx"],"stack":null}
+[2026-08-23T07:42:21.252Z] {"timestamp":1787470941579,"level":"DEBUG","args":["[vite]","hot updated: /src/index.css"],"stack":null}
+[2026-08-23T07:42:30.267Z] {"timestamp":1787470948289,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T07:42:30.267Z] {"timestamp":1787470948909,"level":"DEBUG","args":["[vite] connected."],"stack":null}
