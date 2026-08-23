@@ -16,4 +16,4 @@
 - [x] Verify the separate Render FastAPI backend deployment, MongoDB readiness, and public operational endpoints.
 - [x] Confirm frontend-to-backend API configuration and document the deployed backend endpoint.
 - [x] Fix the deployed Render “Explore demo” navigation so the sign-in route does not show Not Found.
-- [ ] Replace role preview shortcuts with real role-aware sign-in access and authenticated role-specific dashboards.
+- [x] Replace role preview shortcuts with real role-aware sign-in access and authenticated role-specific dashboards.
