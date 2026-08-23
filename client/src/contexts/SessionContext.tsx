@@ -36,7 +36,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const signIn = useCallback(async (email: string, password: string) => { const session = await api.login(email, password); persist(session.user, session.access_token); return session.user; }, [persist]);
   const register = useCallback(async (payload: { name: string; email: string; password: string; phone?: string }) => { const session = await api.register(payload); persist(session.user, session.access_token); return session.user; }, [persist]);
   const signOut = useCallback(() => { setUser(null); setAccessToken(null); window.localStorage.removeItem(STORAGE_KEY); }, []);
-  const demoSession = useCallback((role: Role) => { setUser({ id: `demo-${role}`, name: `Demo ${role[0].toUpperCase()}${role.slice(1)}`, email: `${role}@demo.local`, role, is_active: true }); setAccessToken(null); }, []);
+  const demoSession = useCallback((role: Role) => { window.location.assign(`/sign-in/${role}`); }, []);
   const value = useMemo(() => ({ user, accessToken, ready, signIn, register, signOut, demoSession }), [user, accessToken, ready, signIn, register, signOut, demoSession]);
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

@@ -19,7 +19,7 @@ export default function Register() {
     try {
       const user = await register({ name: form.name, email: form.email, phone: form.phone || undefined, password: form.password });
       toast.success(`Welcome, ${user.name}. Your patient workspace is ready.`);
-      navigate("/dashboard");
+      navigate("/dashboard/patient");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Unable to create your account.");
     } finally {
