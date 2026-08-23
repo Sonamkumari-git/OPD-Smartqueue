@@ -308,3 +308,22 @@
 [2026-08-23T14:07:46.010Z] {"timestamp":1787494064713,"level":"DEBUG","args":["[vite] connected."],"stack":null}
 [2026-08-23T14:09:57.015Z] {"timestamp":1787494194341,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
 [2026-08-23T14:09:57.015Z] {"timestamp":1787494195925,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T14:15:51.000Z] {"timestamp":1787494549048,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T14:15:51.000Z] {"timestamp":1787494549663,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T14:15:52.395Z] {"timestamp":1787494550282,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T14:15:52.395Z] {"timestamp":1787494550289,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T14:15:52.395Z] {"timestamp":1787494550425,"level":"INFO","args":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"],"stack":null}
+[2026-08-23T14:38:30.020Z] {"timestamp":1787495907457,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T14:38:30.020Z] {"timestamp":1787495908167,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T14:38:56.010Z] {"timestamp":1787495934469,"level":"DEBUG","args":["[vite]","invalidate /src/contexts/SessionContext.tsx: Could not Fast Refresh (\"useSession\" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports"],"stack":null}
+[2026-08-23T14:38:56.011Z] {"timestamp":1787495934469,"level":"DEBUG","args":["[vite]","hot updated: /src/contexts/SessionContext.tsx"],"stack":null}
+[2026-08-23T14:38:56.011Z] {"timestamp":1787495934470,"level":"DEBUG","args":["[vite]","hot updated: /src/index.css"],"stack":null}
+[2026-08-23T14:38:56.011Z] {"timestamp":1787495935898,"level":"DEBUG","args":["[vite]","hot updated: /src/App.tsx"],"stack":null}
+[2026-08-23T14:38:56.011Z] {"timestamp":1787495935899,"level":"DEBUG","args":["[vite]","hot updated: /src/pages/SignIn.tsx"],"stack":null}
+[2026-08-23T14:38:56.011Z] {"timestamp":1787495935899,"level":"DEBUG","args":["[vite]","hot updated: /src/pages/Dashboard.tsx"],"stack":null}
+[2026-08-23T14:38:56.011Z] {"timestamp":1787495935899,"level":"DEBUG","args":["[vite]","hot updated: /src/pages/Register.tsx"],"stack":null}
+[2026-08-23T14:38:56.011Z] {"timestamp":1787495935899,"level":"DEBUG","args":["[vite]","hot updated: /src/components/RoleDashboard.tsx"],"stack":null}
+[2026-08-23T14:39:00.008Z] {"timestamp":1787495937889,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T14:39:00.008Z] {"timestamp":1787495939418,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T14:39:04.010Z] {"timestamp":1787495942014,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T14:39:04.010Z] {"timestamp":1787495942601,"level":"DEBUG","args":["[vite] connected."],"stack":null}

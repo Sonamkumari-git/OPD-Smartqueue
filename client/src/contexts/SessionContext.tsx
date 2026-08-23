@@ -1,4 +1,4 @@
-/** Clinical Flight Deck session boundary: role data and the bearer token are isolated from visual components. */
+/** Clinical Flight Deck session boundary: one authenticated role workspace per browser tab. */
 import { api, type Role, type SessionUser } from "@/services/api";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
@@ -21,7 +21,11 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const serialized = window.localStorage.getItem(STORAGE_KEY);
+    // localStorage is shared by every tab on the same origin. Using it caused
+    // a Doctor sign-in to overwrite an open Patient workspace. sessionStorage
+    // is scoped to one tab, so concurrent role workflows remain independent.
+    window.localStorage.removeItem(STORAGE_KEY);
+    const serialized = window.sessionStorage.getItem(STORAGE_KEY);
     if (!serialized) return setReady(true);
     try {
       const saved = JSON.parse(serialized) as { user: SessionUser; accessToken: string };
@@ -31,11 +35,11 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const persist = useCallback((nextUser: SessionUser, nextToken: string) => {
-    setUser(nextUser); setAccessToken(nextToken); window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: nextUser, accessToken: nextToken }));
+    setUser(nextUser); setAccessToken(nextToken); window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ user: nextUser, accessToken: nextToken }));
   }, []);
   const signIn = useCallback(async (email: string, password: string) => { const session = await api.login(email, password); persist(session.user, session.access_token); return session.user; }, [persist]);
   const register = useCallback(async (payload: { name: string; email: string; password: string; phone?: string }) => { const session = await api.register(payload); persist(session.user, session.access_token); return session.user; }, [persist]);
-  const signOut = useCallback(() => { setUser(null); setAccessToken(null); window.localStorage.removeItem(STORAGE_KEY); }, []);
+  const signOut = useCallback(() => { setUser(null); setAccessToken(null); window.sessionStorage.removeItem(STORAGE_KEY); }, []);
   const demoSession = useCallback((role: Role) => { window.location.assign(`/sign-in/${role}`); }, []);
   const value = useMemo(() => ({ user, accessToken, ready, signIn, register, signOut, demoSession }), [user, accessToken, ready, signIn, register, signOut, demoSession]);
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
