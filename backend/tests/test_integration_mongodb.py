@@ -69,6 +69,21 @@ def test_concurrent_call_next_claims_only_one_current_patient():
     asyncio.run(scenario())
 
 
+def test_consultation_completion_calculates_duration_with_persisted_timestamps():
+    async def scenario():
+        db, fixture = await reset_database(); patient_user, patient = await create_patient(db, 1)
+        await insert_waiting_token(db, fixture, patient_user, patient, 1)
+        service = QueueService()
+        called = await service.call_next(fixture["doctor_user"])
+        started = await service.transition_current(fixture["doctor_user"], called["_id"], ["CALLED"], "IN_CONSULTATION")
+        completed = await service.transition_current(fixture["doctor_user"], started["_id"], ["IN_CONSULTATION"], "COMPLETED")
+        assert completed["status"] == "COMPLETED"
+        consultation = await db.consultations.find_one({"token_id": started["_id"]})
+        assert consultation is not None
+        assert consultation["duration_seconds"] >= 0
+    asyncio.run(scenario())
+
+
 def test_notification_dedupe_is_atomic_under_concurrency():
     async def scenario():
         db, fixture = await reset_database(); patient_user, patient = await create_patient(db, 1); token = await insert_waiting_token(db, fixture, patient_user, patient, 1)

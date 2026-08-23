@@ -9,7 +9,10 @@ _database: AsyncIOMotorDatabase | None = None
 
 async def connect_to_mongo() -> None:
     global _client, _database
-    _client = AsyncIOMotorClient(_settings.mongodb_url, serverSelectionTimeoutMS=4000)
+    # The queue lifecycle persists timezone-aware timestamps. Configure PyMongo/Motor
+    # to read MongoDB BSON datetimes as aware values too, preventing naive/aware
+    # subtraction errors when completing a consultation or calculating durations.
+    _client = AsyncIOMotorClient(_settings.mongodb_url, serverSelectionTimeoutMS=4000, tz_aware=True)
     await _client.admin.command("ping")
     _database = _client[_settings.database_name]
 
