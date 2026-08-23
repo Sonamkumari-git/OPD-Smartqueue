@@ -144,3 +144,14 @@
 [2026-08-23T06:25:36.264Z] {"timestamp":1787466334370,"level":"INFO","args":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"],"stack":null}
 [2026-08-23T06:25:44.638Z] {"timestamp":1787466343262,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
 [2026-08-23T06:25:44.638Z] {"timestamp":1787466344727,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T06:28:23.852Z] {"timestamp":1787466501712,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T06:28:23.852Z] {"timestamp":1787466501717,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T06:28:23.852Z] {"timestamp":1787466501835,"level":"INFO","args":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"],"stack":null}
+[2026-08-23T06:28:24.225Z] {"timestamp":1787466501914,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T06:28:24.225Z] {"timestamp":1787466502503,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T06:31:37.229Z] {"timestamp":1787466695367,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T06:31:37.229Z] {"timestamp":1787466696046,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T06:31:41.240Z] {"timestamp":1787466699638,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T06:31:41.240Z] {"timestamp":1787466700285,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-23T06:32:24.246Z] {"timestamp":1787466742336,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-23T06:32:24.246Z] {"timestamp":1787466742952,"level":"DEBUG","args":["[vite] connected."],"stack":null}

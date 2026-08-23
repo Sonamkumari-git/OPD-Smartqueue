@@ -13,3 +13,5 @@
 - [ ] Create and verify the Render deployment with user-authorized account access.
 - [ ] Create and verify the user-requested Render account before importing the deployment Blueprint.
 - [ ] Inspect the Render deployment failure, correct the underlying project or configuration issue, and verify the redeploy.
+- [x] Verify the separate Render FastAPI backend deployment, MongoDB readiness, and public operational endpoints.
+- [x] Confirm frontend-to-backend API configuration and document the deployed backend endpoint.
