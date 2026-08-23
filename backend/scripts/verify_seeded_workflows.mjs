@@ -78,8 +78,8 @@ const ready = (await request("/ready")).body;
 assert(health?.success && health.data?.database_ready, "Health endpoint did not report a ready MongoDB connection.");
 assert(ready?.success && ready.data?.ready, "Readiness endpoint did not report a ready service.");
 
-const [admin, doctor, nurse, currentPatient, patientForSocket] = await Promise.all([
-  login("admin"), login("dr.aarav.mehta"), login("nurse.kavya"), login("patient01"), login("patient07"),
+const [admin, doctor, nurse, currentPatient, nextPatient, patientForSocket] = await Promise.all([
+  login("admin"), login("dr.aarav.mehta"), login("nurse.kavya"), login("patient01"), login("patient02"), login("patient07"),
 ]);
 assert(admin.user.role === "admin" && doctor.user.role === "doctor" && nurse.user.role === "nurse" && currentPatient.user.role === "patient", "Seeded account roles do not match expected access levels.");
 
@@ -103,10 +103,14 @@ assert(unauthorizedAnalytics.response.status === 403, "Patient access unexpected
 
 const inConsultation = patientTokens.find((item) => item.status === "IN_CONSULTATION");
 assert(inConsultation, "The current seeded cardiology patient was not in consultation.");
+const consultationPosition = await api(`/api/queue/token/${inConsultation.id}/position`, {}, currentPatient.access_token);
+assert(consultationPosition.patient_guidance === "IN_CONSULTATION" && consultationPosition.estimated_wait_minutes === 0 && consultationPosition.recommended_return_at === null, "In-consultation patient position still exposes a waiting estimate.");
 await api("/api/doctors/me/complete-consultation", { method: "POST", body: JSON.stringify({ token_id: inConsultation.id }) }, doctor.access_token);
 
 const called = await api("/api/doctors/me/call-next", { method: "POST" }, doctor.access_token);
 assert(called.status === "CALLED", "Doctor call-next did not claim the next real waiting token.");
+const calledPosition = await api(`/api/queue/token/${called.id}/position`, {}, nextPatient.access_token);
+assert(calledPosition.patient_guidance === "CALLED" && calledPosition.estimated_wait_minutes === 0 && calledPosition.recommended_return_at === null, "Called patient position still exposes a waiting estimate.");
 const started = await api("/api/doctors/me/start-consultation", { method: "POST", body: JSON.stringify({ token_id: called.id }) }, doctor.access_token);
 assert(started.status === "IN_CONSULTATION", "Doctor start-consultation did not transition the live token.");
 
