@@ -74,3 +74,5 @@
 [2026-08-24T11:42:38.087Z] 11:42:38 AM [vite] (client) hmr update /src/index.css
 [2026-08-24T11:50:23.405Z] 11:50:23 AM [vite] (client) hmr update /src/index.css, /src/contexts/SessionContext.tsx, /src/pages/Dashboard.tsx, /src/pages/PatientDashboard.tsx
 [2026-08-24T11:51:32.798Z] 11:51:32 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+[2026-08-24T11:53:58.497Z] 11:53:58 AM [vite] (client) hmr update /src/index.css
+[2026-08-24T11:56:50.952Z] 11:56:50 AM [vite] (client) hmr update /src/index.css

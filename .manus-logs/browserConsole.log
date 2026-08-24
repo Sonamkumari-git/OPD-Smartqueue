@@ -427,3 +427,15 @@
 [2026-08-24T11:53:05.165Z] {"timestamp":1787572384592,"level":"DEBUG","args":["[vite] connected."],"stack":null}
 [2026-08-24T11:53:11.115Z] {"timestamp":1787572388488,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
 [2026-08-24T11:53:11.115Z] {"timestamp":1787572389214,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-24T11:54:01.473Z] {"timestamp":1787572439455,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-24T11:54:01.473Z] {"timestamp":1787572439464,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-24T11:54:01.473Z] {"timestamp":1787572439574,"level":"INFO","args":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"],"stack":null}
+[2026-08-24T11:54:01.990Z] {"timestamp":1787572440550,"level":"DEBUG","args":["[vite]","hot updated: /src/index.css"],"stack":null}
+[2026-08-24T11:54:42.118Z] {"timestamp":1787572480216,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-24T11:54:42.118Z] {"timestamp":1787572481683,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-24T11:54:52.107Z] {"timestamp":1787572489783,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-24T11:54:52.107Z] {"timestamp":1787572491237,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-24T11:56:37.132Z] {"timestamp":1787572595227,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-24T11:56:37.132Z] {"timestamp":1787572596707,"level":"DEBUG","args":["[vite] connected."],"stack":null}
+[2026-08-24T11:56:45.128Z] {"timestamp":1787572603039,"level":"DEBUG","args":["[Manus] Debug collector initialized (no rrweb, UI events only)"],"stack":null}
+[2026-08-24T11:56:45.128Z] {"timestamp":1787572603714,"level":"DEBUG","args":["[vite] connected."],"stack":null}
