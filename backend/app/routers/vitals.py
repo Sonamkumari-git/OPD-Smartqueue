@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from app.auth.dependencies import require_roles
 from app.repositories.core import CatalogRepository, QueueRepository
 from app.schemas.common import APIResponse, Role
-from app.schemas.vitals import VitalsCreateRequest
+from app.schemas.vitals import VitalsCreateRequest, VitalsUpdateRequest
 from app.services.clinical_service import ClinicalService
 from app.services.queue_service import QueueService
 from app.utils.errors import ForbiddenError, NotFoundError
@@ -20,6 +20,18 @@ async def record_vitals(payload: VitalsCreateRequest, current_user: dict = Depen
     return APIResponse(data=serialize_document(vital), message="Vitals recorded for workflow use.")
 
 
+@router.patch("/{vital_id}", response_model=APIResponse[dict])
+async def update_vitals(vital_id: str, payload: VitalsUpdateRequest, current_user: dict = Depends(require_roles(Role.NURSE))):
+    vital = await service.update_vitals(current_user, vital_id, payload)
+    return APIResponse(data=serialize_document(vital), message="Workflow vital observation updated.")
+
+
+@router.delete("/{vital_id}", response_model=APIResponse[dict])
+async def delete_vitals(vital_id: str, current_user: dict = Depends(require_roles(Role.NURSE))):
+    await service.delete_vitals(current_user, vital_id)
+    return APIResponse(data={"id": vital_id}, message="Workflow vital observation deleted.")
+
+
 @router.get("/{patient_id}", response_model=APIResponse[list[dict]])
 async def patient_vitals(patient_id: str, current_user: dict = Depends(require_roles(Role.PATIENT, Role.DOCTOR, Role.NURSE))):
     if not ObjectId.is_valid(patient_id):
@@ -32,7 +44,7 @@ async def patient_vitals(patient_id: str, current_user: dict = Depends(require_r
             raise ForbiddenError()
     elif current_user["role"] == Role.DOCTOR.value:
         doctor = await CatalogRepository().get_doctor_by_user_id(current_user["_id"])
-        if doctor is None or not await queue.doctor_has_active_patient(doctor["_id"], patient_object_id, service.queue.queue_date()):
+        if doctor is None or not await queue.doctor_has_active_patient(doctor["_id"], patient_object_id, QueueService.queue_date()):
             raise ForbiddenError()
     else:
         allowed_departments = {str(department_id) for department_id in current_user.get("department_ids", [])}

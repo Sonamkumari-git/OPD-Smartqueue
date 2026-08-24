@@ -14,8 +14,7 @@ class BloodPressure(BaseModel):
         return self
 
 
-class VitalsCreateRequest(BaseModel):
-    token_id: str
+class VitalsMeasurementRequest(BaseModel):
     temperature: float = Field(ge=30.0, le=113.0, description="Temperature stored in degrees Fahrenheit; Celsius input is normalized.")
     heart_rate: int = Field(ge=20, le=260)
     blood_pressure: BloodPressure
@@ -31,6 +30,14 @@ class VitalsCreateRequest(BaseModel):
         raise ValueError("Temperature must be between 30–45°C or 86–113°F.")
 
 
+class VitalsCreateRequest(VitalsMeasurementRequest):
+    token_id: str
+
+
+class VitalsUpdateRequest(VitalsMeasurementRequest):
+    pass
+
+
 class VitalsPublic(BaseModel):
     id: str
     patient_id: str
@@ -41,3 +48,5 @@ class VitalsPublic(BaseModel):
     blood_pressure: BloodPressure
     spo2: int
     recorded_at: datetime
+    updated_at: datetime | None = None
+    patient_name: str | None = None

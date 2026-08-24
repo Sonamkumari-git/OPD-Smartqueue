@@ -24,3 +24,4 @@
 - [x] Replace shared local browser authentication persistence with tab-scoped session storage so concurrent role tabs remain independent.
 - [x] Replace misleading in-consultation patient wait estimates and return guidance with a consultation-in-progress status.
 - [x] Fix the deployed Nurse Dashboard vital-save request and verify persistence for an authorized active visit.
+- [ ] Add nurse-authorized edit and delete controls for patient-linked vital records and display the same observations to the assigned doctor during consultation.

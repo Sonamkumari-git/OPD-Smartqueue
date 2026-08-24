@@ -161,8 +161,27 @@ class ClinicalRepository:
         document["_id"] = result.inserted_id
         return document
 
+    async def get_vitals(self, vital_id: ObjectId) -> dict | None:
+        return await self.db.vitals.find_one({"_id": vital_id})
+
+    async def update_vitals(self, vital_id: ObjectId, update: dict) -> dict | None:
+        return await self.db.vitals.find_one_and_update({"_id": vital_id}, {"$set": update}, return_document=ReturnDocument.AFTER)
+
+    async def delete_vitals(self, vital_id: ObjectId) -> bool:
+        result = await self.db.vitals.delete_one({"_id": vital_id})
+        return result.deleted_count == 1
+
     async def list_vitals(self, patient_id: ObjectId) -> list[dict]:
-        return await self.db.vitals.find({"patient_id": patient_id}).sort("recorded_at", DESCENDING).to_list(length=100)
+        return await self.db.vitals.aggregate([
+            {"$match": {"patient_id": patient_id}},
+            {"$lookup": {"from": "patients", "localField": "patient_id", "foreignField": "_id", "as": "patient"}},
+            {"$unwind": {"path": "$patient", "preserveNullAndEmptyArrays": True}},
+            {"$lookup": {"from": "users", "localField": "patient.user_id", "foreignField": "_id", "as": "patient_user"}},
+            {"$unwind": {"path": "$patient_user", "preserveNullAndEmptyArrays": True}},
+            {"$set": {"patient_name": {"$ifNull": ["$patient_name", "$patient_user.name"]}}},
+            {"$project": {"patient": 0, "patient_user": 0}},
+            {"$sort": {"recorded_at": DESCENDING}},
+        ]).to_list(length=100)
 
 
 class NotificationRepository:

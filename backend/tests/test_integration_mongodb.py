@@ -14,7 +14,7 @@ from app.services.clinical_service import ClinicalService
 from app.services.notification_service import NotificationService
 from app.services.queue_service import QueueService
 from app.routers.vitals import patient_vitals
-from app.schemas.vitals import BloodPressure, VitalsCreateRequest
+from app.schemas.vitals import BloodPressure, VitalsCreateRequest, VitalsUpdateRequest
 from app.utils.errors import AppError, ConflictError, ForbiddenError
 
 
@@ -110,10 +110,20 @@ def test_nurse_can_read_vital_history_for_an_assigned_active_visit():
         db, fixture = await reset_database(); patient_user, patient = await create_patient(db, 1)
         token = await insert_waiting_token(db, fixture, patient_user, patient, 1)
         clinical = ClinicalService()
-        await clinical.record_vitals(fixture["nurse"], VitalsCreateRequest(token_id=str(token["_id"]), temperature=98.7, heart_rate=75, blood_pressure=BloodPressure(systolic=118, diastolic=76), spo2=99))
-        response = await patient_vitals(str(patient["_id"]), fixture["nurse"])
-        assert len(response.data) == 1
-        assert response.data[0]["token_id"] == str(token["_id"])
+        vital = await clinical.record_vitals(fixture["nurse"], VitalsCreateRequest(token_id=str(token["_id"]), temperature=98.7, heart_rate=75, blood_pressure=BloodPressure(systolic=118, diastolic=76), spo2=99))
+        updated = await clinical.update_vitals(fixture["nurse"], str(vital["_id"]), VitalsUpdateRequest(temperature=99.1, heart_rate=79, blood_pressure=BloodPressure(systolic=120, diastolic=78), spo2=98))
+        assert updated["heart_rate"] == 79
+        nurse_response = await patient_vitals(str(patient["_id"]), fixture["nurse"])
+        assert len(nurse_response.data) == 1
+        assert nurse_response.data[0]["token_id"] == str(token["_id"])
+        assert nurse_response.data[0]["patient_name"] == "Patient 1"
+        queue = QueueService()
+        called = await queue.call_next(fixture["doctor_user"])
+        await queue.transition_current(fixture["doctor_user"], called["_id"], ["CALLED"], "IN_CONSULTATION")
+        doctor_response = await patient_vitals(str(patient["_id"]), fixture["doctor_user"])
+        assert doctor_response.data[0]["id"] == str(vital["_id"])
+        await clinical.delete_vitals(fixture["nurse"], str(vital["_id"]))
+        assert (await patient_vitals(str(patient["_id"]), fixture["nurse"])).data == []
     asyncio.run(scenario())
 
 
