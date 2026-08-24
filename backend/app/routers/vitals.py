@@ -6,6 +6,7 @@ from app.repositories.core import CatalogRepository, QueueRepository
 from app.schemas.common import APIResponse, Role
 from app.schemas.vitals import VitalsCreateRequest
 from app.services.clinical_service import ClinicalService
+from app.services.queue_service import QueueService
 from app.utils.errors import ForbiddenError, NotFoundError
 from app.utils.serializers import serialize_document
 
@@ -35,7 +36,7 @@ async def patient_vitals(patient_id: str, current_user: dict = Depends(require_r
             raise ForbiddenError()
     else:
         allowed_departments = {str(department_id) for department_id in current_user.get("department_ids", [])}
-        visits = await queue.list_waiting_visits(service.queue.queue_date())
+        visits = await queue.list_waiting_visits(QueueService.queue_date())
         if not any(visit["patient_id"] == patient_object_id and str(visit["department_id"]) in allowed_departments for visit in visits):
             raise ForbiddenError("Nurses may view vitals only for an active visit in an assigned department.")
     return APIResponse(data=[serialize_document(item) for item in await service.patient_vitals(patient_object_id)])

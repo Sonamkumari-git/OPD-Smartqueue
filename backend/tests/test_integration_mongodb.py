@@ -13,6 +13,7 @@ from app.schemas.queue import TokenCreateRequest
 from app.services.clinical_service import ClinicalService
 from app.services.notification_service import NotificationService
 from app.services.queue_service import QueueService
+from app.routers.vitals import patient_vitals
 from app.schemas.vitals import BloodPressure, VitalsCreateRequest
 from app.utils.errors import AppError, ConflictError, ForbiddenError
 
@@ -101,6 +102,18 @@ def test_called_and_in_consultation_positions_do_not_publish_wait_estimates():
         assert consultation_position["estimated_wait_minutes"] == 0
         assert consultation_position["recommended_return_at"] is None
         assert "consultation" in consultation_position["estimate_notice"].lower()
+    asyncio.run(scenario())
+
+
+def test_nurse_can_read_vital_history_for_an_assigned_active_visit():
+    async def scenario():
+        db, fixture = await reset_database(); patient_user, patient = await create_patient(db, 1)
+        token = await insert_waiting_token(db, fixture, patient_user, patient, 1)
+        clinical = ClinicalService()
+        await clinical.record_vitals(fixture["nurse"], VitalsCreateRequest(token_id=str(token["_id"]), temperature=98.7, heart_rate=75, blood_pressure=BloodPressure(systolic=118, diastolic=76), spo2=99))
+        response = await patient_vitals(str(patient["_id"]), fixture["nurse"])
+        assert len(response.data) == 1
+        assert response.data[0]["token_id"] == str(token["_id"])
     asyncio.run(scenario())
 
 
