@@ -58,17 +58,28 @@ const queueSteps = ["Token issued", "Live queue state", "Approaching notice", "C
 
 function BrandMark() {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3" aria-label="OPD SmartQueue">
       <img
         src="/queue-assets/queue-pulse-logo.webp"
         alt="OPD SmartQueue queue pulse logo"
-        className="h-11 w-11 object-contain"
+        className="h-12 w-12 object-contain"
       />
       <div className="leading-none">
-        <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-teal-700">OPD</p>
-        <p className="mt-1 text-base font-extrabold tracking-[-0.05em] text-[#15334A]">SmartQueue</p>
+        <p className="text-[9px] font-extrabold uppercase tracking-[0.28em] text-[#0F8F83]">OPD / LIVE CARE RAIL</p>
+        <p className="mt-1 font-[Fraunces] text-[1.05rem] font-semibold tracking-[-0.055em] text-[#15334A]">SmartQueue</p>
       </div>
     </div>
+  );
+}
+
+function QueueSignal({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 620 150" fill="none" aria-hidden="true" className={className}>
+      <path d="M-30 122C84 132 94 64 184 78c93 15 92-59 190-37 82 18 82 93 176 65 34-10 62-41 100-57" stroke="currentColor" strokeWidth="2" />
+      <circle cx="184" cy="78" r="8" fill="currentColor" />
+      <circle cx="374" cy="41" r="8" fill="currentColor" />
+      <circle cx="550" cy="106" r="8" fill="currentColor" />
+    </svg>
   );
 }
 
@@ -98,6 +109,7 @@ export default function Home() {
 
       <main>
         <section className="relative mx-auto grid max-w-[1440px] overflow-hidden px-5 pb-18 pt-7 sm:px-8 lg:grid-cols-[1.02fr_0.98fr] lg:px-12 lg:pb-24 lg:pt-15">
+          <QueueSignal className="pointer-events-none absolute -left-12 bottom-2 w-[52rem] text-[#0F8F83]/12 lg:-left-4 lg:bottom-0" />
           <div className="relative z-10 max-w-2xl py-7 lg:py-16">
             <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#0F8F83]/20 bg-white/75 px-3.5 py-2 text-xs font-extrabold uppercase tracking-[0.14em] text-[#0F8F83] shadow-sm">
               <Radio className="h-3.5 w-3.5" /> Live queue coordination
@@ -127,17 +139,17 @@ export default function Home() {
             <div className="absolute right-[-7rem] top-[-4rem] h-[36rem] w-[36rem] rounded-full bg-[#DDEFEA] blur-3xl" />
             <img src="/queue-assets/clinical-hero.webp" alt="Abstract outpatient care environment" className="absolute inset-0 h-full w-full rounded-[2.25rem] object-cover object-right shadow-[0_28px_70px_rgba(21,51,74,0.18)]" />
             <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-tr from-[#15334A]/70 via-[#15334A]/5 to-transparent" />
-            <div className="absolute bottom-5 left-5 right-5 rounded-[1.6rem] border border-white/25 bg-white/88 p-5 shadow-xl backdrop-blur-xl sm:bottom-8 sm:left-8 sm:right-auto sm:w-[310px]">
+            <div className="absolute bottom-5 left-5 right-5 rounded-[1.6rem] border border-white/25 bg-white/88 p-5 shadow-xl backdrop-blur-xl sm:bottom-8 sm:left-8 sm:right-auto sm:w-[318px]">
               <div className="flex items-center justify-between">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#15334A]/55">Live queue pulse</p>
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#15334A]/55">Patient rail / live state</p>
                 <span className="flex items-center gap-1.5 text-[10px] font-extrabold text-[#0F8F83]"><span className="h-2 w-2 rounded-full bg-[#0F8F83]" /> Connected</span>
               </div>
               <div className="mt-4 flex items-end justify-between">
-                <div><p className="text-4xl font-extrabold tracking-[-0.07em] text-[#15334A]">C-150</p><p className="mt-1 text-xs font-bold text-[#15334A]/55">Your active token</p></div>
+                <div><p className="text-4xl font-extrabold tracking-[-0.07em] text-[#15334A]">C-150</p><p className="mt-1 text-xs font-bold text-[#15334A]/55">Cardiology · waiting</p></div>
                 <div className="rounded-2xl bg-[#E0F3EF] px-3 py-2 text-right"><p className="text-xl font-extrabold text-[#0F8F83]">7</p><p className="text-[9px] font-extrabold uppercase tracking-[0.09em] text-[#0F8F83]">ahead</p></div>
               </div>
-              <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-[#15334A]/10"><div className="h-full w-[47%] rounded-full bg-[#0F8F83]" /></div>
-              <p className="mt-3 text-xs font-bold text-[#15334A]/65">Queue moving. Return window is approaching.</p>
+              <div className="mt-5 flex items-center gap-2"><div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#15334A]/10"><div className="h-full w-[47%] rounded-full bg-[#0F8F83]" /></div><span className="text-[10px] font-extrabold text-[#15334A]/48">47%</span></div>
+              <p className="mt-3 text-xs font-bold text-[#15334A]/65">Signal: queue moving. Return window approaching.</p>
             </div>
           </div>
         </section>
@@ -145,13 +157,14 @@ export default function Home() {
         <section id="workflow" className="relative overflow-hidden bg-[#15334A] py-18 text-white lg:py-24">
           <img src="/queue-assets/queue-pulse-texture.webp" alt="" className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-screen" />
           <div className="relative mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+            <QueueSignal className="pointer-events-none absolute -right-14 top-8 w-[42rem] text-[#76D6CB]/20" />
             <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
               <div><p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#76D6CB]">A role-specific care rail</p><h2 className="mt-4 max-w-sm font-[Fraunces] text-4xl font-semibold leading-tight tracking-[-0.04em] sm:text-5xl">One shared queue. Four clear responsibilities.</h2></div>
               <p className="max-w-xl text-base leading-7 text-white/68">The queue is the common operational source of truth. Each role sees an intentionally limited workspace: patients follow their own token, staff operate the queue, and administrators review aggregate performance.</p>
             </div>
 
             <div className="mt-12 grid gap-3 md:grid-cols-4">
-              {queueSteps.map((step, index) => <div key={step} className="group rounded-[1.5rem] border border-white/12 bg-white/[0.055] p-5 transition-transform duration-200 hover:-translate-y-1 hover:bg-white/[0.1]"><p className="text-xs font-extrabold text-[#76D6CB]">0{index + 1}</p><p className="mt-9 text-sm font-extrabold tracking-[-0.02em]">{step}</p><div className="mt-4 h-px bg-white/15"><div className="h-px w-1/2 bg-[#76D6CB] transition-all duration-300 group-hover:w-full" /></div></div>)}
+              {queueSteps.map((step, index) => <div key={step} className="group rounded-[1.5rem] border border-white/12 bg-white/[0.055] p-5 transition-transform duration-200 hover:-translate-y-1 hover:bg-white/[0.1]"><p className="text-xs font-extrabold text-[#76D6CB]">0{index + 1} / SIGNAL</p><p className="mt-9 text-sm font-extrabold tracking-[-0.02em]">{step}</p><div className="mt-4 flex items-center gap-2"><div className="h-px flex-1 bg-white/15"><div className="h-px w-1/2 bg-[#76D6CB] transition-all duration-300 group-hover:w-full" /></div><span className="h-2 w-2 rounded-full border border-[#76D6CB] bg-[#15334A] transition-colors group-hover:bg-[#76D6CB]" /></div></div>)}
             </div>
 
             <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_0.92fr]">

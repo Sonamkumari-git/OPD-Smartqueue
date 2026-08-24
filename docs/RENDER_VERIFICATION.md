@@ -14,7 +14,7 @@ This deployment was verified after the Render Blueprint built commit `67fe728`.
 
 The original static-site build invoked Corepack and failed during its package-manager signature verification. The Render build command now uses the pinned `pnpm@10.4.1` through `npx`, which bypasses that Corepack failure while preserving the frozen lockfile installation.
 
-The UI originally referenced preview-only `/manus-storage/` asset paths. The existing compressed visual assets are now included in the static build under `/queue-assets/`, so the external Render domain serves them directly.
+The UI uses compressed visual assets included in the static build under `/queue-assets/`, so the external Render domain serves them directly.
 
 ## Operational Note
 

@@ -1,17 +1,51 @@
-# OPD SmartQueue — local and generated files
+# Node.js dependencies and build output
 node_modules/
 dist/
+.vite/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# Local configuration and secrets
 .env
 .env.*
 !.env.example
-backend/.venv/
 backend/.env
-backend/__pycache__/
-backend/**/__pycache__/
-backend/.pytest_cache/
+backend/.env.*
+
+# Python environments, caches, and test output
+.venv/
+venv/
+env/
+backend/.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Generated machine-learning outputs
 backend/app/ml/models/*.joblib
 backend/app/ml/models/*.json
 backend/app/ml/data/*.csv
 backend/app/ml/eda/*.png
-*.pyc
+
+# Runtime diagnostics and logs
+.manus/
+.manus-logs/
+logs/
+*.log
+
+# Operating system and editor files
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

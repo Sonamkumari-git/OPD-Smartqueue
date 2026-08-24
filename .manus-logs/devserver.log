@@ -1,78 +1,60 @@
-[2026-08-22T12:15:14.885Z] Starting dev server with command: pnpm run dev
-[2026-08-22T12:15:16.686Z] > opd-smartqueue@1.0.0 dev /home/ubuntu/opd-smartqueue
-[2026-08-22T12:15:16.686Z] > vite --host
-[2026-08-22T12:15:17.105Z] VITE v7.1.9  ready in 381 ms
-[2026-08-22T12:15:17.105Z] ➜  Local:   http://localhost:3000/
-[2026-08-22T12:15:17.105Z] ➜  Network: http://169.254.0.21:3000/
-[2026-08-22T12:17:43.145Z] 12:17:43 PM [vite] (client) page reload index.html
-[2026-08-22T12:17:50.922Z] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-[2026-08-22T12:28:23.624Z] 12:28:23 PM [vite] (client) hmr update /src/pages/Home.tsx, /src/index.css
-[2026-08-22T12:28:23.919Z] 12:28:23 PM [vite] (client) hmr update /src/App.tsx, /src/index.css
-[2026-08-22T12:28:27.224Z] 12:28:27 PM [vite] (client) ✨ new dependencies optimized: recharts
-[2026-08-22T12:28:27.225Z] 12:28:27 PM [vite] (client) ✨ optimized dependencies changed. reloading
-[2026-08-22T12:28:50.940Z] 12:28:50 PM [vite] (client) hmr update /src/index.css, /src/contexts/SessionContext.tsx, /src/pages/Dashboard.tsx
-[2026-08-22T12:28:52.260Z] 12:28:52 PM [vite] (client) hmr invalidate /src/contexts/SessionContext.tsx Could not Fast Refresh ("useSession" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
-[2026-08-22T12:28:52.260Z] 12:28:52 PM [vite] (client) hmr update /src/App.tsx, /src/pages/SignIn.tsx, /src/pages/Dashboard.tsx
-[2026-08-22T12:31:27.621Z] 12:31:27 PM [vite] (client) hmr update /src/index.css, /src/pages/Dashboard.tsx
-[2026-08-22T12:32:31.071Z] 12:32:31 PM [vite] (client) hmr update /src/index.css
-[2026-08-22T12:33:35.133Z] 12:33:35 PM [vite] (client) hmr update /src/index.css
-[2026-08-22T16:25:33.268Z] Starting dev server with command: pnpm run dev
-[2026-08-22T16:25:34.079Z] > opd-smartqueue@1.0.0 dev /home/ubuntu/opd-smartqueue
-[2026-08-22T16:25:34.079Z] > vite --host
-[2026-08-22T16:25:35.030Z] VITE v7.1.9  ready in 888 ms
-[2026-08-22T16:25:35.030Z] ➜  Local:   http://localhost:3000/
-[2026-08-22T16:25:35.030Z] ➜  Network: http://169.254.0.21:3000/
-[2026-08-22T16:25:51.460Z] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-[2026-08-22T16:49:30.074Z] 4:49:30 PM [vite] (client) hmr update /src/index.css, /src/pages/Dashboard.tsx
-[2026-08-22T16:56:47.362Z] 4:56:47 PM [vite] (client) hmr update /src/index.css, /src/contexts/SessionContext.tsx, /src/pages/Dashboard.tsx
-[2026-08-22T16:57:06.259Z] 4:57:06 PM [vite] (client) hmr update /src/App.tsx, /src/index.css
-[2026-08-22T16:57:06.609Z] 4:57:06 PM [vite] (client) hmr update /src/pages/SignIn.tsx, /src/index.css
-[2026-08-22T16:58:19.056Z] 4:58:19 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-[2026-08-22T16:59:24.852Z] 4:59:24 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-[2026-08-22T17:13:28.286Z] 5:13:28 PM [vite] (client) hmr update /src/pages/SignIn.tsx, /src/index.css
-[2026-08-22T17:13:28.297Z] 5:13:28 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-[2026-08-22T17:14:40.966Z] 5:14:40 PM [vite] (client) hmr update /src/index.css
-[2026-08-23T06:17:55.686Z] 6:17:55 AM [vite] (client) hmr update /src/index.css
-[2026-08-23T06:25:05.072Z] 6:25:05 AM [vite] (client) page reload index.html
-[2026-08-23T06:25:05.104Z] 6:25:05 AM [vite] (client) hmr update /src/pages/SignIn.tsx, /src/index.css
-[2026-08-23T06:25:05.105Z] 6:25:05 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-[2026-08-23T06:25:05.111Z] 6:25:05 AM [vite] (client) hmr update /src/pages/Home.tsx, /src/index.css
-[2026-08-23T06:25:06.378Z] 6:25:06 AM [vite] (client) hmr update /src/pages/Register.tsx, /src/index.css
-[2026-08-23T06:25:32.832Z] 6:25:32 AM [vite] (client) hmr update /src/index.css
-[2026-08-23T06:28:20.744Z] 6:28:20 AM [vite] (client) hmr update /src/index.css
-[2026-08-23T06:33:31.429Z] 6:33:31 AM [vite] (client) hmr update /src/index.css
-[2026-08-23T07:17:36.852Z] 7:17:36 AM [vite] (client) hmr update /src/pages/Home.tsx, /src/index.css
-[2026-08-23T07:18:13.838Z] 7:18:13 AM [vite] (client) hmr update /src/index.css
-[2026-08-23T07:21:22.066Z] 7:21:22 AM [vite] (client) hmr update /src/index.css
-[2026-08-23T07:30:31.026Z] 7:30:31 AM [vite] (client) hmr update /src/pages/Register.tsx, /src/index.css
-[2026-08-23T07:30:31.027Z] 7:30:31 AM [vite] (client) hmr update /src/contexts/SessionContext.tsx, /src/index.css
-[2026-08-23T07:30:31.028Z] 7:30:31 AM [vite] (client) hmr update /src/pages/SignIn.tsx, /src/index.css
-[2026-08-23T07:30:31.360Z] 7:30:31 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
-[2026-08-23T07:30:41.179Z] 7:30:41 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
-[2026-08-23T07:31:15.978Z] 7:31:15 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
-[2026-08-23T07:33:05.389Z] 7:33:05 AM [vite] (client) hmr update /src/index.css
-[2026-08-23T07:35:19.428Z] 7:35:19 AM [vite] (client) hmr update /src/index.css
-[2026-08-23T07:42:18.728Z] 7:42:18 AM [vite] (client) hmr update /src/pages/Register.tsx, /src/index.css
-[2026-08-23T07:42:18.729Z] 7:42:18 AM [vite] (client) hmr update /src/index.css, /src/contexts/SessionContext.tsx, /src/pages/Dashboard.tsx
-[2026-08-23T07:43:08.179Z] 7:43:08 AM [vite] (client) hmr update /src/index.css
-[2026-08-23T07:45:20.940Z] 7:45:20 AM [vite] (client) hmr update /src/index.css
-[2026-08-23T13:47:17.176Z] 1:47:17 PM [vite] (client) hmr update /src/index.css
-[2026-08-23T14:05:17.851Z] 2:05:17 PM [vite] (client) hmr update /src/index.css
-[2026-08-23T14:15:49.238Z] 2:15:49 PM [vite] (client) hmr update /src/index.css
-[2026-08-23T14:38:52.901Z] 2:38:52 PM [vite] (client) hmr update /src/contexts/SessionContext.tsx, /src/index.css
-[2026-08-23T14:38:54.420Z] 2:38:54 PM [vite] (client) hmr invalidate /src/contexts/SessionContext.tsx Could not Fast Refresh ("useSession" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
-[2026-08-23T14:38:54.421Z] 2:38:54 PM [vite] (client) hmr update /src/App.tsx, /src/pages/SignIn.tsx, /src/pages/Dashboard.tsx, /src/pages/Register.tsx, /src/components/RoleDashboard.tsx
-[2026-08-23T14:39:36.959Z] 2:39:36 PM [vite] (client) hmr update /src/index.css
-[2026-08-23T14:44:13.043Z] 2:44:13 PM [vite] (client) hmr update /src/index.css
-[2026-08-23T15:00:55.769Z] 3:00:55 PM [vite] (client) hmr update /src/index.css, /src/contexts/SessionContext.tsx, /src/pages/Dashboard.tsx
-[2026-08-23T15:00:57.651Z] 3:00:57 PM [vite] (client) hmr invalidate /src/contexts/SessionContext.tsx Could not Fast Refresh ("useSession" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
-[2026-08-23T15:00:57.651Z] 3:00:57 PM [vite] (client) hmr update /src/App.tsx, /src/pages/SignIn.tsx, /src/pages/Dashboard.tsx, /src/pages/Register.tsx, /src/components/RoleDashboard.tsx
-[2026-08-23T15:02:47.986Z] 3:02:47 PM [vite] (client) hmr update /src/index.css, /src/components/RoleDashboard.tsx
-[2026-08-23T15:04:35.728Z] 3:04:35 PM [vite] (client) hmr update /src/index.css
-[2026-08-23T15:10:06.562Z] 3:10:06 PM [vite] (client) hmr update /src/index.css
-[2026-08-24T11:37:55.049Z] 11:37:55 AM [vite] (client) hmr update /src/index.css
-[2026-08-24T11:42:38.087Z] 11:42:38 AM [vite] (client) hmr update /src/index.css
-[2026-08-24T11:50:23.405Z] 11:50:23 AM [vite] (client) hmr update /src/index.css, /src/contexts/SessionContext.tsx, /src/pages/Dashboard.tsx, /src/pages/PatientDashboard.tsx
-[2026-08-24T11:51:32.798Z] 11:51:32 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-[2026-08-24T11:53:58.497Z] 11:53:58 AM [vite] (client) hmr update /src/index.css
-[2026-08-24T11:56:50.952Z] 11:56:50 AM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.420Z] 12:19:55 PM [vite] (client) hmr update /src/components/ui/tooltip.tsx, /src/index.css
+[2026-08-24T12:19:55.512Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.513Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.513Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.513Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.513Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.513Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.513Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.513Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.513Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.513Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:19:55.514Z] 12:19:55 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:20:01.186Z] 12:20:01 PM [vite] (client) hmr update /src/index.css
+[2026-08-24T12:21:47.262Z] ELIFECYCLE  Command failed.
+[2026-08-24T12:21:47.303Z] Dev server exited with code -1
+[2026-08-24T12:21:48.382Z] Starting dev server with command: pnpm run dev
+[2026-08-24T12:21:49.024Z] > opd-smartqueue@1.0.0 dev /home/ubuntu/opd-smartqueue
+[2026-08-24T12:21:49.024Z] > vite --host
+[2026-08-24T12:21:49.449Z] VITE v7.1.9  ready in 383 ms
+[2026-08-24T12:21:49.449Z] ➜  Local:   http://localhost:3000/
+[2026-08-24T12:21:49.449Z] ➜  Network: http://169.254.0.21:3000/
+[2026-08-24T12:21:50.866Z] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[2026-08-24T12:25:11.996Z] 12:25:11 PM [vite] changed tsconfig file detected: /home/ubuntu/opd-smartqueue/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+[2026-08-24T12:26:37.338Z] 12:26:37 PM [vite] (client) hmr update /src/pages/SignIn.tsx, /src/index.css
+[2026-08-24T12:26:37.338Z] 12:26:37 PM [vite] (client) hmr update /src/pages/Home.tsx, /src/index.css
