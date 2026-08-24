@@ -23,4 +23,4 @@
 - [x] Validate the deployed API, frontend role workflows, authorization, queue lifecycle, and WebSocket events against actual Atlas records; fix and retest any failures.
 - [x] Replace shared local browser authentication persistence with tab-scoped session storage so concurrent role tabs remain independent.
 - [x] Replace misleading in-consultation patient wait estimates and return guidance with a consultation-in-progress status.
-- [ ] Fix the deployed Nurse Dashboard vital-save request and verify persistence for an authorized active visit.
+- [x] Fix the deployed Nurse Dashboard vital-save request and verify persistence for an authorized active visit.
